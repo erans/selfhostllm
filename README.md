@@ -2,7 +2,7 @@
 
 A web-based calculator for estimating GPU memory requirements and maximum concurrent requests for self-hosted LLM inference.
 
-🔗 **Live Demo**: [https://selfhostllm.com](https://selfhostllm.com)
+🔗 **Live Demo**: [https://selfhostllm.org](https://selfhostllm.org)
 
 ## Overview
 
