@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SelfHostLLM - GPU Calculator</title>
+    <link rel="stylesheet" href="selfhost-llm.css">
+</head>
+<body>
+    <button class="share-button" onclick="showShareDialog()" title="Share Configuration">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="currentColor"/>
+        </svg>
+    </button>
+    
+    <div class="overlay" id="overlay" onclick="closeShareDialog()"></div>
+    
+    <div class="share-dialog" id="shareDialog">
+        <h3>📤 Share Configuration</h3>
+        <p>Share this link with others to load the same configuration:</p>
+        <div class="share-url-container" id="shareUrl"></div>
+        <div class="share-dialog-buttons">
+            <button onclick="copyShareLink()">📋 Copy Link</button>
+            <button onclick="closeShareDialog()">✖ Close</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="ascii-art" id="ascii-art"></div>
+            <div class="subtitle">GPU Memory Calculator for Self-Hosted LLM Inference</div>
+        </div>
+        
+        <div class="calculator-grid">
+            <div class="section">
+                <div class="section-title">› Hardware Configuration</div>
+                
+                <div class="form-group">
+                    <label for="gpu-type">GPU Model:</label>
+                    <select id="gpu-type" onchange="updateGPUSpecs();">
+                        <option value="">Select GPU...</option>
+                        <optgroup label="NVIDIA RTX 40 Series">
+                            <option value="rtx4090" data-vram="24">RTX 4090 (24GB VRAM)</option>
+                            <option value="rtx4080" data-vram="16">RTX 4080 (16GB VRAM)</option>
+                            <option value="rtx4070ti" data-vram="12">RTX 4070 Ti (12GB VRAM)</option>
+                            <option value="rtx4070" data-vram="12">RTX 4070 (12GB VRAM)</option>
+                            <option value="rtx4060ti" data-vram="16">RTX 4060 Ti 16GB (16GB VRAM)</option>
+                            <option value="rtx4060ti8" data-vram="8">RTX 4060 Ti 8GB (8GB VRAM)</option>
+                        </optgroup>
+                        <optgroup label="NVIDIA RTX 30 Series">
+                            <option value="rtx3090ti" data-vram="24">RTX 3090 Ti (24GB VRAM)</option>
+                            <option value="rtx3090" data-vram="24">RTX 3090 (24GB VRAM)</option>
+                            <option value="rtx3080ti" data-vram="12">RTX 3080 Ti (12GB VRAM)</option>
+                            <option value="rtx3080" data-vram="10">RTX 3080 (10GB VRAM)</option>
+                        </optgroup>
+                        <optgroup label="NVIDIA Professional">
+                            <option value="a100" data-vram="40">A100 40GB (40GB VRAM)</option>
+                            <option value="a100-80" data-vram="80">A100 80GB (80GB VRAM)</option>
+                            <option value="h100" data-vram="80">H100 (80GB VRAM)</option>
+                            <option value="v100" data-vram="32">V100 32GB (32GB VRAM)</option>
+                            <option value="rtx6000" data-vram="48">RTX 6000 Ada (48GB VRAM)</option>
+                        </optgroup>
+                        <optgroup label="AMD Radeon">
+                            <option value="rx7900xtx" data-vram="24">RX 7900 XTX (24GB VRAM)</option>
+                            <option value="rx7900xt" data-vram="20">RX 7900 XT (20GB VRAM)</option>
+                        </optgroup>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="gpu-count">Number of GPUs:</label>
+                    <input type="number" id="gpu-count" min="1" max="8" value="1" oninput="calculate();">
+                </div>
+                
+                <div class="form-group">
+                    <label for="vram-per-gpu">VRAM per GPU (GB):</label>
+                    <input type="number" id="vram-per-gpu" min="4" max="128" value="24" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="system-overhead">System Overhead (GB):</label>
+                    <input type="number" id="system-overhead" min="0" max="8" value="2" step="0.5" oninput="calculate();">
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">› Model Configuration</div>
+                
+                <div class="form-group radio-group">
+                    <label class="radio-group-label">Model Input Method:</label>
+                    <div class="radio-options">
+                        <label class="radio-option">
+                            <input type="radio" name="model-input-type" value="preset" checked onchange="updateModelInputMethod()"> 
+                            <span>Common Model</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="model-input-type" value="parameters" onchange="updateModelInputMethod()"> 
+                            <span>Parameters</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="model-input-type" value="memory" onchange="updateModelInputMethod()"> 
+                            <span>Memory</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group" id="model-preset-group">
+                    <label for="model-preset">Select Model:</label>
+                    <select id="model-preset" onchange="updateModelSelection()">
+                        <optgroup label="Meta Llama">
+                            <option value="7" data-memory="14" data-quant="1.0">Llama 3 8B (~14GB)</option>
+                            <option value="70" data-memory="140" data-quant="1.0">Llama 3 70B (~140GB)</option>
+                            <option value="70" data-memory="140" data-quant="1.0">Llama 3.1 70B (~140GB)</option>
+                            <option value="405" data-memory="810" data-quant="0.5">Llama 3.1 405B (~810GB)</option>
+                        </optgroup>
+                        <optgroup label="Alibaba Qwen">
+                            <option value="1.8" data-memory="3.6" data-quant="1.0">Qwen 2B (~3.6GB)</option>
+                            <option value="7" data-memory="14" data-quant="1.0">Qwen 7B (~14GB)</option>
+                            <option value="14" data-memory="28" data-quant="1.0">Qwen 14B (~28GB)</option>
+                            <option value="32" data-memory="64" data-quant="0.5">Qwen 32B (~64GB)</option>
+                            <option value="72" data-memory="144" data-quant="0.5">Qwen 72B (~144GB)</option>
+                            <option value="110" data-memory="220" data-quant="0.5">Qwen 110B (~220GB)</option>
+                        </optgroup>
+                        <optgroup label="Qwen Coder">
+                            <option value="1.5" data-memory="3" data-quant="1.0">Qwen-Coder 1.5B (~3GB)</option>
+                            <option value="7" data-memory="14" data-quant="1.0">Qwen-Coder 7B (~14GB)</option>
+                            <option value="32" data-memory="64" data-quant="0.5">Qwen-Coder 32B (~64GB)</option>
+                        </optgroup>
+                        <optgroup label="DeepSeek">
+                            <option value="7" data-memory="14" data-quant="1.0">DeepSeek 7B (~14GB)</option>
+                            <option value="16" data-memory="32" data-quant="1.0">DeepSeek 16B (~32GB)</option>
+                            <option value="67" data-memory="134" data-quant="0.5">DeepSeek 67B (~134GB)</option>
+                            <option value="236" data-memory="472" data-quant="0.5">DeepSeek 236B (~472GB)</option>
+                            <option value="671" data-memory="720" data-quant="0.25">DeepSeek-R1 671B (~720GB)</option>
+                        </optgroup>
+                        <optgroup label="Mistral">
+                            <option value="7" data-memory="14" data-quant="1.0">Mistral 7B (~14GB)</option>
+                            <option value="12" data-memory="24" data-quant="1.0">Mistral-Nemo 12B (~24GB)</option>
+                            <option value="22" data-memory="44" data-quant="0.5">Mistral-Small 22B (~44GB)</option>
+                            <option value="123" data-memory="246" data-quant="0.5">Mistral-Large 123B (~246GB)</option>
+                        </optgroup>
+                        <optgroup label="Mixtral">
+                            <option value="8" data-memory="16" data-quant="0.5">Mixtral 8x7B (~94GB total, ~16GB active)</option>
+                            <option value="8" data-memory="45" data-quant="0.5">Mixtral 8x22B (~282GB total, ~45GB active)</option>
+                        </optgroup>
+                        <optgroup label="OpenAI GPT">
+                            <option value="20.9" data-memory="42" data-quant="0.3">GPT-OSS 20B (~42GB FP16, ~16GB MXFP4)</option>
+                            <option value="116.8" data-memory="234" data-quant="0.3">GPT-OSS 120B (~234GB FP16, ~61GB MXFP4)</option>
+                            <option value="6" data-memory="12" data-quant="1.0">GPT-J 6B (~12GB)</option>
+                            <option value="2.7" data-memory="5.4" data-quant="1.0">GPT-Neo 2.7B (~5.4GB)</option>
+                            <option value="20" data-memory="40" data-quant="0.5">GPT-NeoX 20B (~40GB)</option>
+                        </optgroup>
+                        <optgroup label="Google">
+                            <option value="2" data-memory="4" data-quant="1.0">Gemma 2B (~4GB)</option>
+                            <option value="7" data-memory="14" data-quant="1.0">Gemma 7B (~14GB)</option>
+                            <option value="27" data-memory="54" data-quant="0.5">Gemma-2 27B (~54GB)</option>
+                        </optgroup>
+                        <optgroup label="Microsoft">
+                            <option value="3.8" data-memory="7.6" data-quant="1.0">Phi-3 Mini 3.8B (~7.6GB)</option>
+                            <option value="7" data-memory="14" data-quant="1.0">Phi-3 Small 7B (~14GB)</option>
+                            <option value="14" data-memory="28" data-quant="1.0">Phi-3 Medium 14B (~28GB)</option>
+                        </optgroup>
+                        <optgroup label="Other Models">
+                            <option value="6" data-memory="12" data-quant="1.0">Yi 6B (~12GB)</option>
+                            <option value="34" data-memory="68" data-quant="0.5">Yi 34B (~68GB)</option>
+                            <option value="34" data-memory="68" data-quant="0.5">CodeLlama 34B (~68GB)</option>
+                            <option value="40" data-memory="80" data-quant="0.5">Falcon 40B (~80GB)</option>
+                            <option value="180" data-memory="360" data-quant="0.5">Falcon 180B (~360GB)</option>
+                        </optgroup>
+                    </select>
+                </div>
+                
+                <div class="form-group hidden" id="model-parameters-group">
+                    <label for="model-parameters">Model Parameters (B):</label>
+                    <input type="number" id="model-parameters" min="0.1" max="1000" step="0.1" value="7" oninput="calculate();">
+                    <small class="help-text">Enter billions of parameters (e.g., 7 for 7B model)</small>
+                </div>
+                
+                <div class="form-group hidden" id="model-memory-group">
+                    <label for="model-memory-input">Model Memory (GB):</label>
+                    <input type="number" id="model-memory-input" min="1" max="2000" value="14" oninput="calculate();">
+                    <small class="help-text">Enter total memory required in GB</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="quantization">Quantization:</label>
+                    <select id="quantization" onchange="calculate();">
+                        <option value="1.0">FP16/BF16 (Full Precision)</option>
+                        <option value="0.75">INT8 (~25% reduction)</option>
+                        <option value="0.5">INT4 (~50% reduction)</option>
+                        <option value="0.3">MXFP4 (~70% reduction)</option>
+                        <option value="0.25">Extreme Quant (~75% reduction)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group radio-group">
+                    <label class="radio-group-label">Context Input Method:</label>
+                    <div class="radio-options">
+                        <label class="radio-option">
+                            <input type="radio" name="context-input-type" value="preset" checked onchange="updateContextInputMethod()"> 
+                            <span>Preset</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="context-input-type" value="custom" onchange="updateContextInputMethod()"> 
+                            <span>Custom</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group" id="context-preset-group">
+                    <label for="context-preset">Context Length:</label>
+                    <select id="context-preset" onchange="calculate();">
+                        <option value="2048">2K tokens</option>
+                        <option value="4096">4K tokens</option>
+                        <option value="8192">8K tokens</option>
+                        <option value="16384">16K tokens</option>
+                        <option value="32768">32K tokens</option>
+                        <option value="65536">64K tokens</option>
+                        <option value="131072">128K tokens</option>
+                        <option value="262144">256K tokens</option>
+                        <option value="524288">512K tokens</option>
+                        <option value="1048576">1M tokens</option>
+                    </select>
+                </div>
+                
+                <div class="form-group hidden" id="context-custom-group">
+                    <label for="context-custom">Context Length (tokens):</label>
+                    <input type="number" id="context-custom" min="128" max="2000000" value="4096" oninput="calculate();">
+                    <small class="help-text">Enter number of tokens</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="kv-cache-overhead">KV Cache Overhead (%):</label>
+                    <input type="number" id="kv-cache-overhead" min="10" max="50" value="20" step="5" oninput="calculate();">
+                    <small class="help-text">Use arrow keys to adjust</small>
+                </div>
+            </div>
+        </div>
+        
+        <button class="calculate-btn" onclick="calculate()">» CALCULATE CONFIGURATION «</button>
+        
+        <div id="results" class="results hidden">
+            <div class="results-title">═══ CALCULATION RESULTS ═══</div>
+            
+            <div class="result-item highlight-result">
+                <span class="result-label">Max Concurrent Requests:</span>
+                <span class="result-value" id="concurrent-requests">-</span>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">Total VRAM Available:</span>
+                <span class="result-value" id="total-vram">-</span>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">Model Memory Required:</span>
+                <span class="result-value" id="model-memory">-</span>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">KV Cache per Request:</span>
+                <span class="result-value" id="kv-cache-memory">-</span>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">Available for Inference:</span>
+                <span class="result-value" id="available-memory">-</span>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">Effective Context Window:</span>
+                <span class="result-value" id="effective-context">-</span>
+            </div>
+            
+            <div id="warnings"></div>
+        </div>
+        
+        <div class="info-box">
+            <div class="info-title">› CALCULATION NOTES</div>
+            • Model memory includes weights and activation overhead<br>
+            • KV cache grows linearly with context length and batch size<br>
+            • System overhead includes OS, drivers, and framework memory<br>
+            • Quantization reduces precision but may impact model quality<br>
+            • Professional GPUs (A100, H100) have better memory bandwidth<br>
+            • Multiple GPUs require tensor parallelism for large models
+        </div>
+    </div>
+
+    <script src="selfhost-llm.js"></script>
+    <script>
+        // ASCII Art Styles
+        const asciiArts = [
+            // Style 1: Box Drawing Characters (Original)
+            ` ███████╗███████╗██╗     ███████╗██╗  ██╗ ██████╗ ███████╗████████╗██╗     ██╗     ███╗   ███╗
+ ██╔════╝██╔════╝██║     ██╔════╝██║  ██║██╔═══██╗██╔════╝╚══██╔══╝██║     ██║     ████╗ ████║
+ ███████╗█████╗  ██║     █████╗  ███████║██║   ██║███████╗   ██║   ██║     ██║     ██╔████╔██║
+ ╚════██║██╔══╝  ██║     ██╔══╝  ██╔══██║██║   ██║╚════██║   ██║   ██║     ██║     ██║╚██╔╝██║
+ ███████║███████╗███████╗██║     ██║  ██║╚██████╔╝███████║   ██║   ███████╗███████╗██║ ╚═╝ ██║
+ ╚══════╝╚══════╝╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚═╝   ╚══════╝╚══════╝╚═╝     ╚═╝`,
+            
+            // Style 2: Classic ASCII
+            `  ____  _____ _     _____ _   _  ___  ____ _____ _     _     __  __ 
+ / ___|| ____| |   |  ___| | | |/ _ \\/ ___|_   _| |   | |   |  \\/  |
+ \\___ \\|  _| | |   | |_  | |_| | | | \\___ \\ | | | |   | |   | |\\/| |
+  ___) | |___| |___|  _| |  _  | |_| |___) || | | |___| |___| |  | |
+ |____/|_____|_____|_|   |_| |_|\\___/|____/ |_| |_____|_____|_|  |_|`,
+            
+            // Style 3: 3D Effect
+            `╔═╗╔═╗╦  ╔═╗╦ ╦╔═╗╔═╗╔╦╗╦  ╦  ╔╦╗
+╚═╗║╣ ║  ╠╣ ╠═╣║ ║╚═╗ ║ ║  ║  ║║║
+╚═╝╚═╝╩═╝╚  ╩ ╩╚═╝╚═╝ ╩ ╩═╝╩═╝╩ ╩`,
+            
+            // Style 4: Blocks Style
+            `█████ █████ █     █████ █   █ █████ █████ █████ █     █     █   █
+█     █     █     █     █   █ █   █ █       █   █     █     ██ ██
+█████ ████  █     ████  █████ █   █ █████   █   █     █     █ █ █
+    █ █     █     █     █   █ █   █     █   █   █     █     █   █
+█████ █████ █████ █     █   █ █████ █████   █   █████ █████ █   █`,
+            
+            // Style 5: Big Money
+            ` $$$$$$\\  $$$$$$$$\\ $$\\       $$$$$$$$\\ $$\\   $$\\  $$$$$$\\   $$$$$$\\ $$$$$$$$\\ $$\\       $$\\       $$\\      $$\\ 
+$$  __$$\\ $$  _____|$$ |      $$  _____|$$ |  $$ |$$  __$$\\ $$  __$$\\\\__$$  __|$$ |      $$ |      $$$\\    $$$ |
+$$ /  \\__|$$ |      $$ |      $$ |      $$ |  $$ |$$ /  $$ |$$ /  \\__|  $$ |   $$ |      $$ |      $$$$\\  $$$$ |
+\\$$$$$$\\  $$$$$\\    $$ |      $$$$$\\    $$$$$$$$ |$$ |  $$ |\\$$$$$$\\    $$ |   $$ |      $$ |      $$\\$$\\$$ $$ |
+ \\____$$\\ $$  __|   $$ |      $$  __|   $$  __$$ |$$ |  $$ | \\____$$\\   $$ |   $$ |      $$ |      $$ \\$$$  $$ |
+$$\\   $$ |$$ |      $$ |      $$ |      $$ |  $$ |$$ |  $$ |$$\\   $$ |  $$ |   $$ |      $$ |      $$ |\\$  /$$ |
+\\$$$$$$  |$$$$$$$$\\ $$$$$$$$\\ $$ |      $$ |  $$ | $$$$$$  |\\$$$$$$  |  $$ |   $$$$$$$$\\ $$$$$$$$\\ $$ | \\_/ $$ |
+ \\______/ \\________|\\________|\\__|      \\__|  \\__| \\______/  \\______/   \\__|   \\________|\\________|\\__|     \\__|`,
+            
+            // Style 6: Digital Rain
+            `┌─┐┌─┐┬  ┌─┐┬ ┬┌─┐┌─┐┌┬┐┬  ┬  ┌┬┐
+└─┐├┤ │  ├┤ ├─┤│ │└─┐ │ │  │  │││
+└─┘└─┘┴─┘└  ┴ ┴└─┘└─┘ ┴ ┴─┘┴─┘┴ ┴`,
+            
+            // Style 7: Gothic
+            `╔═╗╔═╗╦  ╔═╗╦ ╦╔═╗╔═╗╔╦╗  ╦  ╦  ╔╦╗
+╚═╗║╣ ║  ╠╣ ╠═╣║ ║╚═╗ ║   ║  ║  ║║║
+╚═╝╚═╝╩═╝╚  ╩ ╩╚═╝╚═╝ ╩   ╩═╝╩═╝╩ ╩`,
+            
+            // Style 8: Circuit Board
+            `▓█████ ▓█████  ██▓      █████▒██░ ██  ▒█████    ██████ ▄▄▄█████▓ ██▓     ██▓     ███▄ ▄███▓
+▒██    ▒██   ▀ ▓██▒    ▓██   ▒▓██░ ██▒▒██▒  ██▒▒██    ▒ ▓  ██▒ ▓▒▓██▒    ▓██▒    ▓██▒▀█▀ ██▒
+░ ▓██▄  ▒███   ▒██░    ▒████ ░▒██▀▀██░▒██░  ██▒░ ▓██▄   ▒ ▓██░ ▒░▒██░    ▒██░    ▓██    ▓██░
+  ▒   ██▒██  ▄ ▒██░    ░▓█▒  ░░▓█ ░██ ▒██   ██░  ▒   ██▒░ ▓██▓ ░ ▒██░    ▒██░    ▒██    ▒██ 
+▒██████▒░█████▒░██████▒░▒█░   ░▓█▒░██▓░ ████▓▒░▒██████▒▒  ▒██▒ ░ ░██████▒░██████▒▒██▒   ░██▒
+▒ ▒▓▒ ▒ ░░ ▒░ ░░ ▒░▓  ░ ▒ ░    ▒ ░░▒░▒░ ▒░▒░▒░ ▒ ▒▓▒ ▒ ░  ▒ ░░   ░ ▒░▓  ░░ ▒░▓  ░░ ▒░   ░  ░`,
+            
+            // Style 9: Minimal
+            `selfhost llm`,
+            
+            // Style 10: Banner
+            `╭─────────────────────────────────────────────────────────────────╮
+│  ███████ ███████ ██      ███████ ██   ██  ██████  ███████ ████████│
+│  ██      ██      ██      ██      ██   ██ ██    ██ ██         ██   │
+│  ███████ █████   ██      █████   ███████ ██    ██ ███████    ██   │
+│       ██ ██      ██      ██      ██   ██ ██    ██      ██    ██   │
+│  ███████ ███████ ███████ ██      ██   ██  ██████  ███████    ██   │
+│                            L L M                                   │
+╰─────────────────────────────────────────────────────────────────╯`
+        ];
+        
+        // Randomly select and display ASCII art
+        function displayRandomAsciiArt() {
+            const randomIndex = Math.floor(Math.random() * asciiArts.length);
+            const asciiElement = document.getElementById('ascii-art');
+            if (asciiElement) {
+                asciiElement.textContent = asciiArts[randomIndex];
+            }
+        }
+        
+        // Display ASCII art on page load
+        document.addEventListener('DOMContentLoaded', displayRandomAsciiArt);
+        
+        function showShareDialog() {
+            const dialog = document.getElementById('shareDialog');
+            const overlay = document.getElementById('overlay');
+            const urlContainer = document.getElementById('shareUrl');
+            
+            // Get current URL with all parameters
+            urlContainer.textContent = window.location.href;
+            
+            dialog.classList.add('active');
+            overlay.classList.add('active');
+        }
+        
+        function closeShareDialog() {
+            const dialog = document.getElementById('shareDialog');
+            const overlay = document.getElementById('overlay');
+            
+            dialog.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+        
+        function copyShareLink() {
+            const urlText = document.getElementById('shareUrl').textContent;
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(urlText).then(() => {
+                // Change button text temporarily to show success
+                const copyButton = event.target;
+                const originalText = copyButton.textContent;
+                copyButton.textContent = '✅ Copied!';
+                
+                setTimeout(() => {
+                    copyButton.textContent = originalText;
+                }, 2000);
+            }).catch(err => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = urlText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                // Show success message
+                const copyButton = event.target;
+                const originalText = copyButton.textContent;
+                copyButton.textContent = '✅ Copied!';
+                
+                setTimeout(() => {
+                    copyButton.textContent = originalText;
+                }, 2000);
+            });
+        }
+        
+        // Close dialog on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeShareDialog();
+            }
+        });
+    </script>
+</body>
+</html>

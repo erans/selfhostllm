@@ -1,0 +1,561 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Prevent horizontal scroll on mobile */
+html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+body {
+    background-color: #000;
+    color: #00ff00;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.4;
+    padding: 20px;
+    min-height: 100vh;
+    background-image: 
+        radial-gradient(rgba(0, 255, 0, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #00ff00;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #00ff00;
+    padding-bottom: 20px;
+}
+
+.ascii-art {
+    font-size: 10px;
+    line-height: 1;
+    color: #00ff00;
+    white-space: pre;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #ffff00;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.calculator-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.section {
+    border: 1px solid #00ff00;
+    border-radius: 4px;
+    padding: 15px;
+    background: rgba(0, 255, 0, 0.02);
+}
+
+.section-title {
+    color: #ffff00;
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    color: #00ffff;
+    margin-bottom: 5px;
+    font-size: 12px;
+}
+
+/* Radio button groups */
+.radio-group {
+    margin-bottom: 15px;
+}
+
+.radio-group-label {
+    display: block;
+    color: #00ffff;
+    margin-bottom: 8px;
+    font-size: 12px;
+}
+
+.radio-options {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.radio-option {
+    display: inline-flex;
+    align-items: center;
+    color: #00ff00;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+.radio-option input[type="radio"] {
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.radio-option span {
+    cursor: pointer;
+}
+
+/* Utility classes */
+.hidden {
+    display: none !important;
+}
+
+/* Help text styling */
+.help-text {
+    display: block;
+    color: #888;
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+select, input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    background: #000;
+    border: 1px solid #00ff00;
+    color: #00ff00;
+    font-family: inherit;
+    font-size: 12px;
+    border-radius: 3px;
+}
+
+select:focus, input:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+option {
+    background: #000;
+    color: #00ff00;
+}
+
+.calculate-btn {
+    width: 100%;
+    padding: 12px;
+    background: #000;
+    border: 2px solid #00ff00;
+    color: #00ff00;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+.calculate-btn:hover {
+    background: #00ff00;
+    color: #000;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
+}
+
+.results {
+    margin-top: 30px;
+    border: 2px solid #ffff00;
+    border-radius: 4px;
+    padding: 20px;
+    background: rgba(255, 255, 0, 0.05);
+}
+
+.results-title {
+    color: #ffff00;
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 5px;
+    border-bottom: 1px dotted #00ff00;
+}
+
+.result-label {
+    color: #00ffff;
+}
+
+.result-value {
+    color: #ffff00;
+    font-weight: bold;
+}
+
+/* Highlighted main result */
+.highlight-result {
+    font-size: 1.4em;
+    background: #0a0a0a;
+    border: 1px solid #39ff14;
+    padding: 15px;
+    margin: 10px 0;
+}
+
+.highlight-result .result-label {
+    color: #39ff14;
+}
+
+.highlight-result .result-value {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.warning {
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px solid #ff0000;
+    color: #ff6666;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.share-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #39ff14;
+    color: #000;
+    border: none;
+    padding: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(57, 255, 20, 0.3);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.share-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 20px rgba(57, 255, 20, 0.5);
+}
+
+.share-dialog {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #0a0a0a;
+    border: 2px solid #39ff14;
+    border-radius: 8px;
+    padding: 25px;
+    z-index: 2000;
+    max-width: 600px;
+    width: 90%;
+    box-shadow: 0 0 30px rgba(57, 255, 20, 0.5);
+}
+
+.share-dialog.active {
+    display: block;
+}
+
+.share-dialog h3 {
+    color: #39ff14;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.share-dialog p {
+    color: #888;
+    margin-bottom: 15px;
+}
+
+.share-url-container {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 15px;
+    word-break: break-all;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #39ff14;
+}
+
+.share-dialog-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.share-dialog button {
+    padding: 8px 16px;
+    border: 1px solid #39ff14;
+    background: transparent;
+    color: #39ff14;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.share-dialog button:hover {
+    background: #39ff14;
+    color: #000;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1500;
+}
+
+.overlay.active {
+    display: block;
+}
+
+.info-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid #00ffff;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.info-title {
+    color: #00ffff;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Mobile and Tablet Styles */
+@media (max-width: 768px) {
+    .calculator-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    body {
+        padding: 10px;
+        font-size: 12px;
+    }
+    
+    .container {
+        padding: 15px;
+        border-width: 1px;
+    }
+    
+    .header {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+    }
+    
+    .ascii-art {
+        font-size: 7px;
+        overflow-x: auto;
+        max-width: 100%;
+        line-height: 0.9;
+    }
+    
+    .subtitle {
+        font-size: 14px;
+    }
+    
+    .section {
+        padding: 12px;
+    }
+    
+    .section-title {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+    
+    .form-group {
+        margin-bottom: 12px;
+    }
+    
+    /* Radio buttons responsive */
+    .radio-options {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .radio-option {
+        min-width: fit-content;
+    }
+    
+    select, input[type="number"] {
+        padding: 10px;
+        font-size: 14px;
+        /* Better touch targets */
+        min-height: 44px;
+    }
+    
+    .calculate-btn {
+        padding: 14px;
+        font-size: 14px;
+        min-height: 48px;
+    }
+    
+    .results {
+        padding: 15px;
+        margin-top: 20px;
+    }
+    
+    .results-title {
+        font-size: 16px;
+    }
+    
+    .result-item {
+        flex-direction: column;
+        padding: 8px 5px;
+    }
+    
+    .highlight-result {
+        font-size: 1.2em;
+        padding: 12px;
+    }
+    
+    .highlight-result .result-value {
+        font-size: 1.1em;
+    }
+    
+    .result-label {
+        margin-bottom: 5px;
+    }
+    
+    .share-button {
+        width: 44px;
+        height: 44px;
+        bottom: 20px;
+        right: 20px;
+        top: auto;
+        font-size: 18px;
+    }
+    
+    .share-dialog {
+        width: 95%;
+        padding: 20px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .share-dialog h3 {
+        font-size: 18px;
+    }
+    
+    .share-url-container {
+        font-size: 11px;
+        padding: 8px;
+    }
+    
+    .info-box {
+        padding: 12px;
+        font-size: 11px;
+        margin-top: 15px;
+    }
+    
+    .warning {
+        padding: 8px;
+        font-size: 12px;
+    }
+}
+
+/* Extra small devices (phones in portrait) */
+@media (max-width: 480px) {
+    body {
+        padding: 5px;
+    }
+    
+    .container {
+        padding: 10px;
+        border-radius: 4px;
+    }
+    
+    .ascii-art {
+        font-size: 5px;
+        line-height: 0.8;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        max-width: 100%;
+    }
+    
+    .subtitle {
+        font-size: 13px;
+    }
+    
+    label {
+        font-size: 11px;
+    }
+    
+    /* Stack radio buttons vertically on small screens */
+    .radio-options {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .radio-option {
+        width: 100%;
+    }
+    
+    small, .help-text {
+        font-size: 10px;
+    }
+    
+    .share-dialog-buttons {
+        flex-direction: column;
+    }
+    
+    .share-dialog button {
+        width: 100%;
+        padding: 10px;
+    }
+}
+
+/* Ensure touch-friendly tap targets */
+@media (hover: none) and (pointer: coarse) {
+    select, input[type="number"], button, .share-button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    input[type="radio"] {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+    }
+}
