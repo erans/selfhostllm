@@ -1,5 +1,6 @@
 # Wrangler configuration for SelfHostLLM GPU Calculator Worker
 name = "selfhostllm"
+account_id = "aca6c76689cfd2a4f791b6e38bf0444d"
 main = "worker.js"
 compatibility_date = "2024-01-01"
 
