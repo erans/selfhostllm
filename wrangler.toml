@@ -5,7 +5,7 @@ main = "worker.js"
 compatibility_date = "2024-01-01"
 
 # Worker route (update with your domain)
-# route = "selfhostllm.com/*"
+# route = "selfhostllm.org/*"
 # or use workers.dev subdomain
 workers_dev = true
 
@@ -17,13 +17,3 @@ bucket = "./"
 [dev]
 port = 8080
 local_protocol = "http"
-
-# Environment-specific settings
-[env.production]
-name = "selfhostllm-production"
-workers_dev = false
-# route = "selfhostllm.com/*"
-
-[env.staging]
-name = "selfhostllm-staging"
-workers_dev = true
