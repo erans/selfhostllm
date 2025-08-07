@@ -1,0 +1,84 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.dev.vars
+
+# Cloudflare/Wrangler
+.wrangler/
+dist/
+.mf/
+.dev.vars
+
+# Build outputs
+build/
+dist/
+out/
+.cache/
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
+tmp/
+temp/
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+
+# Local development
+.local/
+.history/
+
+# Cloudflare specific
+worker/
+.miniflare/
+.wrangler/state/
+
+# Optional: If you want to keep certain config files local
+# wrangler.toml.local
+# .dev.vars.example

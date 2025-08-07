@@ -1,0 +1,30 @@
+{
+  "name": "selfhost-llm",
+  "version": "1.0.0",
+  "description": "GPU Memory Calculator for Self-Hosted LLM Inference",
+  "main": "index.html",
+  "scripts": {
+    "dev": "wrangler dev --port 8080 --local",
+    "deploy": "wrangler deploy",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:production": "wrangler deploy --env production",
+    "preview": "wrangler dev --port 3000",
+    "tail": "wrangler tail"
+  },
+  "keywords": [
+    "llm",
+    "gpu",
+    "calculator",
+    "self-hosted",
+    "vram",
+    "memory"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@cloudflare/kv-asset-handler": "^0.3.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.28.0"
+  }
+}

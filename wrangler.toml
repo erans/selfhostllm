@@ -1,0 +1,28 @@
+# Wrangler configuration for SelfHostLLM GPU Calculator Worker
+name = "selfhostllm"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# Worker route (update with your domain)
+# route = "selfhostllm.com/*"
+# or use workers.dev subdomain
+workers_dev = true
+
+# Static assets configuration
+[site]
+bucket = "./"
+
+# Development configuration
+[dev]
+port = 8080
+local_protocol = "http"
+
+# Environment-specific settings
+[env.production]
+name = "selfhostllm-production"
+workers_dev = false
+# route = "selfhostllm.com/*"
+
+[env.staging]
+name = "selfhostllm-staging"
+workers_dev = true

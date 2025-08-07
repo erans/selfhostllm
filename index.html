@@ -25,6 +25,74 @@
         </div>
     </div>
     
+    <div class="explanation-dialog" id="explanationDialog">
+        <h3>📊 How Max Concurrent Requests is Calculated</h3>
+        
+        <div class="explanation-content">
+            <h4>The Formula:</h4>
+            <div class="formula-box">
+                <code>Max Concurrent Requests = Available Memory / KV Cache per Request</code>
+            </div>
+            
+            <h4>Step-by-Step Breakdown:</h4>
+            
+            <div class="step">
+                <strong>1. Total VRAM Available</strong>
+                <code>Total VRAM = Number of GPUs × VRAM per GPU</code>
+                <p>Example: 2 × 24GB = 48GB total</p>
+            </div>
+            
+            <div class="step">
+                <strong>2. Model Memory (Adjusted for Quantization)</strong>
+                <code>Adjusted Model Memory = Base Model Memory × Quantization Factor</code>
+                <p>Example: 14GB (7B model) × 0.5 (INT4) = 7GB</p>
+                <p>The model weights are loaded once and stay in memory.</p>
+            </div>
+            
+            <div class="step">
+                <strong>3. KV Cache per Request</strong>
+                <code>KV Cache = (Context Length × Adjusted Model Memory × KV Overhead) / 1000</code>
+                <p>Example: (8192 × 7GB × 0.2) / 1000 = 11.47GB per request</p>
+                <p>This memory is needed for each active request's attention cache.</p>
+            </div>
+            
+            <div class="step">
+                <strong>4. Available Memory for Inference</strong>
+                <code>Available = Total VRAM - System Overhead - Model Memory</code>
+                <p>Example: 48GB - 2GB - 7GB = 39GB</p>
+                <p>This is what's left for KV caches after loading the model.</p>
+            </div>
+            
+            <div class="step">
+                <strong>5. Maximum Concurrent Requests</strong>
+                <code>Max Requests = Available Memory / KV Cache per Request</code>
+                <p>Example: 39GB / 11.47GB = 3.4 requests</p>
+            </div>
+            
+            <h4>What the Results Mean:</h4>
+            <ul>
+                <li><strong>&lt; 1 request:</strong> Can't handle full context length, need smaller context or better GPU</li>
+                <li><strong>1-2 requests:</strong> Basic serving capability, suitable for personal use</li>
+                <li><strong>3-5 requests:</strong> Good for small-scale deployment</li>
+                <li><strong>10+ requests:</strong> Production-ready for moderate traffic</li>
+            </ul>
+            
+            <h4>Important Notes:</h4>
+            <ul>
+                <li>This is a rough estimate - actual usage varies by model architecture</li>
+                <li><strong>Assumes worst-case scenario:</strong> All requests use the full context window. In reality, most requests use much less, so you may handle more concurrent requests</li>
+                <li>KV cache grows linearly with actual tokens used, not maximum context</li>
+                <li>Different attention mechanisms (MHA, MQA, GQA) affect memory usage</li>
+                <li>Framework overhead and memory fragmentation can impact real-world performance</li>
+                <li>Dynamic batching and memory management can improve real-world throughput</li>
+            </ul>
+        </div>
+        
+        <div class="share-dialog-buttons">
+            <button onclick="closeExplanationDialog()">✖ Close</button>
+        </div>
+    </div>
+    
     <div class="container">
         <div class="header">
             <div class="ascii-art" id="ascii-art"></div>
@@ -240,7 +308,10 @@
         <button class="calculate-btn" onclick="calculate()">» CALCULATE CONFIGURATION «</button>
         
         <div id="results" class="results hidden">
-            <div class="results-title">═══ CALCULATION RESULTS ═══</div>
+            <div class="results-title">
+                ═══ CALCULATION RESULTS ═══
+                <a href="#" class="how-calculated-link" onclick="showHowCalculated(event)">How is this calculated?</a>
+            </div>
             
             <div class="result-item highlight-result">
                 <span class="result-label">Max Concurrent Requests:</span>
@@ -284,6 +355,47 @@
             • Professional GPUs (A100, H100) have better memory bandwidth<br>
             • Multiple GPUs require tensor parallelism for large models
         </div>
+        
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="copyright">
+                    Copyright © 2025 Eran Sandler
+                </div>
+                <div class="social-links">
+                    <a href="https://eran.sandler.co.il" target="_blank" rel="noopener" title="Website" class="social-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" fill="currentColor"/>
+                        </svg>
+                    </a>
+                    <a href="https://x.com/erans" target="_blank" rel="noopener" title="X (Twitter)" class="social-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor"/>
+                        </svg>
+                    </a>
+                    <a href="https://bsky.app/profile/esandler.bsky.social" target="_blank" rel="noopener" title="BlueSky" class="social-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8Z" fill="currentColor"/>
+                        </svg>
+                    </a>
+                    <a href="https://github.com/erans/selfhostllm" target="_blank" rel="noopener" title="GitHub" class="social-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" fill="currentColor"/>
+                        </svg>
+                    </a>
+                    <a href="https://linkedin.com/in/erans" target="_blank" rel="noopener" title="LinkedIn" class="social-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="currentColor"/>
+                        </svg>
+                    </a>
+                    <a href="https://github.com/erans/selfhostllm" target="_blank" rel="noopener" class="github-fork-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 5px;">
+                            <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" fill="currentColor"/>
+                        </svg>
+                        Fork on GitHub
+                    </a>
+                </div>
+            </div>
+        </footer>
     </div>
 
     <script src="selfhost-llm.js"></script>
@@ -424,10 +536,32 @@ $$\\   $$ |$$ |      $$ |      $$ |      $$ |  $$ |$$ |  $$ |$$\\   $$ |  $$ |  
             });
         }
         
+        // Show explanation dialog
+        function showHowCalculated(event) {
+            event.preventDefault();
+            const dialog = document.getElementById('explanationDialog');
+            const overlay = document.getElementById('overlay');
+            
+            dialog.classList.add('active');
+            overlay.classList.add('active');
+            overlay.onclick = closeExplanationDialog;
+        }
+        
+        // Close explanation dialog
+        function closeExplanationDialog() {
+            const dialog = document.getElementById('explanationDialog');
+            const overlay = document.getElementById('overlay');
+            
+            dialog.classList.remove('active');
+            overlay.classList.remove('active');
+            overlay.onclick = closeShareDialog;
+        }
+        
         // Close dialog on Escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeShareDialog();
+                closeExplanationDialog();
             }
         });
     </script>

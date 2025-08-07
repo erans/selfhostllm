@@ -361,6 +361,183 @@ option {
     margin-bottom: 10px;
 }
 
+/* Footer styles */
+.footer {
+    margin-top: 40px;
+    padding: 20px 0;
+    border-top: 1px solid #00ff00;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.copyright {
+    color: #00ffff;
+    font-size: 12px;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.social-link {
+    color: #00ff00;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.social-link:hover {
+    color: #39ff14;
+    transform: translateY(-2px);
+}
+
+.github-fork-link {
+    display: inline-flex;
+    align-items: center;
+    color: #00ff00;
+    text-decoration: none;
+    border: 1px solid #00ff00;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    transition: all 0.3s ease;
+}
+
+.github-fork-link:hover {
+    background: #00ff00;
+    color: #000;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+/* How calculated link */
+.how-calculated-link {
+    display: block;
+    font-size: 12px;
+    color: #00ffff;
+    text-decoration: none;
+    margin-top: 8px;
+    font-weight: normal;
+    transition: color 0.3s ease;
+}
+
+.how-calculated-link:hover {
+    color: #39ff14;
+    text-decoration: underline;
+}
+
+/* Explanation dialog */
+.explanation-dialog {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #0a0a0a;
+    border: 2px solid #39ff14;
+    border-radius: 8px;
+    padding: 25px;
+    z-index: 2000;
+    max-width: 700px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 0 30px rgba(57, 255, 20, 0.5);
+}
+
+.explanation-dialog.active {
+    display: block;
+}
+
+.explanation-dialog h3 {
+    color: #39ff14;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 20px;
+    border-bottom: 1px solid #39ff14;
+    padding-bottom: 10px;
+}
+
+.explanation-dialog h4 {
+    color: #00ffff;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.explanation-content {
+    color: #00ff00;
+    line-height: 1.6;
+}
+
+.formula-box {
+    background: #1a1a1a;
+    border: 1px solid #00ff00;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.formula-box code {
+    color: #39ff14;
+    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.step {
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(0, 255, 0, 0.02);
+    border-left: 3px solid #00ff00;
+    border-radius: 4px;
+}
+
+.step strong {
+    color: #ffff00;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.step code {
+    display: block;
+    color: #39ff14;
+    background: #1a1a1a;
+    padding: 8px;
+    margin: 8px 0;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.step p {
+    color: #888;
+    margin: 5px 0;
+    font-size: 12px;
+}
+
+.explanation-dialog ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.explanation-dialog li {
+    color: #00ff00;
+    margin: 8px 0;
+    font-size: 13px;
+}
+
+.explanation-dialog li strong {
+    color: #ffff00;
+}
+
 /* Mobile and Tablet Styles */
 @media (max-width: 768px) {
     .calculator-grid {
@@ -491,6 +668,43 @@ option {
     .warning {
         padding: 8px;
         font-size: 12px;
+    }
+    
+    /* Footer mobile styles */
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .copyright {
+        order: 2;
+        margin-top: 10px;
+    }
+    
+    .social-links {
+        order: 1;
+        justify-content: center;
+    }
+    
+    /* Explanation dialog mobile */
+    .explanation-dialog {
+        width: 95%;
+        padding: 15px;
+        max-height: 90vh;
+    }
+    
+    .explanation-dialog h3 {
+        font-size: 16px;
+    }
+    
+    .step {
+        padding: 10px;
+        margin: 15px 0;
+    }
+    
+    .step code {
+        font-size: 11px;
+        padding: 5px;
     }
 }
 
