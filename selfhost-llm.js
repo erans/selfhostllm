@@ -337,26 +337,27 @@ function calculate() {
             performanceSection.style.display = 'block';
             
             // Update performance metrics
-            const tokensPerSec = Math.round(perf.tokensPerSecond);
+            const tokensPerSec = perf.tokensPerSecond.toFixed(2);
             document.getElementById('tokens-per-second').textContent = `${tokensPerSec} tokens/sec`;
             
             // Generation time for 100 tokens
-            const genTime = tokensPerSec > 0 ? (100 / tokensPerSec).toFixed(1) : 'N/A';
+            const tokensPerSecNum = parseFloat(tokensPerSec);
+            const genTime = tokensPerSecNum > 0 ? (100 / tokensPerSecNum).toFixed(1) : 'N/A';
             document.getElementById('generation-time').textContent = `${genTime} seconds`;
             
             // Performance rating
             let rating = '';
             let ratingClass = '';
-            if (tokensPerSec > 100) {
+            if (tokensPerSecNum > 100) {
                 rating = '🟢 Excellent';
                 ratingClass = 'excellent';
-            } else if (tokensPerSec > 50) {
+            } else if (tokensPerSecNum > 50) {
                 rating = '🟢 Good';
                 ratingClass = 'good';
-            } else if (tokensPerSec > 25) {
+            } else if (tokensPerSecNum > 25) {
                 rating = '🟡 Moderate';
                 ratingClass = 'moderate';
-            } else if (tokensPerSec > 10) {
+            } else if (tokensPerSecNum > 10) {
                 rating = '🟡 Slow';
                 ratingClass = 'slow';
             } else {
@@ -375,16 +376,16 @@ function calculate() {
             if (notesDiv) {
                 let notes = [];
                 
-                if (tokensPerSec < 25) {
+                if (tokensPerSecNum < 25) {
                     notes.push('• Consider stronger quantization (INT4) for better speed');
                 }
-                if (contextLength > 32768 && tokensPerSec < 50) {
+                if (contextLength > 32768 && tokensPerSecNum < 50) {
                     notes.push('• Reduce context length for faster generation');
                 }
-                if (gpuCount === 1 && tokensPerSec < 30) {
+                if (gpuCount === 1 && tokensPerSecNum < 30) {
                     notes.push('• Consider adding more GPUs for better performance');
                 }
-                if (tokensPerSec > 50) {
+                if (tokensPerSecNum > 50) {
                     notes.push('• Performance should be smooth for most use cases');
                 }
                 

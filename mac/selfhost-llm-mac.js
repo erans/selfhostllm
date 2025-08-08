@@ -86,13 +86,33 @@ function calculatePerformance(modelMemory, quantization, contextLength, macModel
     
     // Quantization speed boost
     let quantBoost = 1.0;
-    if (quantization <= 0.25) {
+    // Check for MLX-specific quantization values first
+    if (quantization === 0.15) {
+        // MLX Q2_K - extreme compression, best speed
+        quantBoost = 2.4;
+    } else if (quantization === 0.2) {
+        // MLX Q3_K
+        quantBoost = 2.25;
+    } else if (quantization === 0.27) {
+        // MLX Q4_K - best balance for Apple Silicon
+        quantBoost = 2.1;
+    } else if (quantization === 0.35) {
+        // MLX Q5_K
+        quantBoost = 1.7;
+    } else if (quantization === 0.52) {
+        // MLX Q6_K
+        quantBoost = 1.5;
+    } else if (quantization <= 0.25) {
+        // Standard extreme quant
         quantBoost = 2.2;
     } else if (quantization <= 0.3) {
+        // MXFP4
         quantBoost = 2.0;
     } else if (quantization <= 0.5) {
+        // INT4
         quantBoost = 1.8;
     } else if (quantization <= 0.75) {
+        // INT8
         quantBoost = 1.4;
     }
     
@@ -191,7 +211,7 @@ function checkCompatibility() {
         const perf = calculatePerformance(modelMemory, quantization, contextLength, macModel);
         
         // Update performance metrics
-        const tokensPerSec = Math.round(perf.tokensPerSecond);
+        const tokensPerSec = perf.tokensPerSecond.toFixed(2);
         document.getElementById('tokens-per-second').textContent = `${tokensPerSec} tokens/sec`;
         
         // Generation time for 100 tokens
@@ -201,16 +221,17 @@ function checkCompatibility() {
         // Performance rating
         let rating = '';
         let ratingClass = '';
-        if (tokensPerSec > 50) {
+        const tokensPerSecNum = parseFloat(tokensPerSec);
+        if (tokensPerSecNum > 50) {
             rating = '🟢 Excellent';
             ratingClass = 'excellent';
-        } else if (tokensPerSec > 30) {
+        } else if (tokensPerSecNum > 30) {
             rating = '🟢 Good';
             ratingClass = 'good';
-        } else if (tokensPerSec > 15) {
+        } else if (tokensPerSecNum > 15) {
             rating = '🟡 Moderate';
             ratingClass = 'moderate';
-        } else if (tokensPerSec > 8) {
+        } else if (tokensPerSecNum > 8) {
             rating = '🟡 Slow';
             ratingClass = 'slow';
         } else {
@@ -226,16 +247,16 @@ function checkCompatibility() {
         const notesDiv = document.getElementById('performance-notes');
         let notes = [];
         
-        if (tokensPerSec < 15) {
+        if (tokensPerSecNum < 15) {
             notes.push('• Consider using stronger quantization (INT4) for better speed');
         }
-        if (contextLength > 32768 && tokensPerSec < 30) {
+        if (contextLength > 32768 && tokensPerSecNum < 30) {
             notes.push('• Reduce context length for faster generation');
         }
-        if (macModel && macModel.includes('m4-pro') && tokensPerSec < 30) {
+        if (macModel && macModel.includes('m4-pro') && tokensPerSecNum < 30) {
             notes.push('• This model may benefit from M4 Max for better performance');
         }
-        if (tokensPerSec > 30) {
+        if (tokensPerSecNum > 30) {
             notes.push('• Performance should be smooth for most use cases');
         }
         
@@ -260,7 +281,9 @@ function generateRecommendations(memoryMargin, modelMemory, quantization, contex
         // Calculate what would work
         const neededRam = Math.abs(memoryMargin);
         
-        if (quantization > 0.25) {
+        if (quantization > 0.27) {
+            recommendations.push(`<li>Try MLX Q4_K quantization (best balance for Apple Silicon)</li>`);
+        } else if (quantization > 0.15) {
             recommendations.push(`<li>Try a higher quantization level (more compression)</li>`);
         }
         
