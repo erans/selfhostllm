@@ -10,8 +10,13 @@ async function handleRequest(event) {
   const path = url.pathname;
 
   try {
-    // For /mac/ path without index.html, append it
-    if (path === '/mac' || path === '/mac/') {
+    // Redirect /mac to /mac/ with a 301
+    if (path === '/mac') {
+      return Response.redirect(`${url.origin}/mac/`, 301);
+    }
+    
+    // For /mac/ path, serve the index.html
+    if (path === '/mac/') {
       const modifiedRequest = new Request(`${url.origin}/mac/index.html`, event.request);
       const response = await getAssetFromKV(event, {
         mapRequestToAsset: () => modifiedRequest,
