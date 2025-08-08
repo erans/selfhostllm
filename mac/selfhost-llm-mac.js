@@ -1,35 +1,16 @@
-// ASCII Art Styles for Mac version
-const asciiArts = [
-    // Style 1: Mac-themed ASCII
-    ` ███╗   ███╗ █████╗  ██████╗    ██╗     ██╗     ███╗   ███╗
- ████╗ ████║██╔══██╗██╔════╝    ██║     ██║     ████╗ ████║
- ██╔████╔██║███████║██║         ██║     ██║     ██╔████╔██║
- ██║╚██╔╝██║██╔══██║██║         ██║     ██║     ██║╚██╔╝██║
- ██║ ╚═╝ ██║██║  ██║╚██████╗    ███████╗███████╗██║ ╚═╝ ██║
- ╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝    ╚══════╝╚══════╝╚═╝     ╚═╝`,
-    
-    // Style 2: Apple-inspired
-    `╔═╗┌─┐┬  ┌─┐╦ ╦┌─┐┌─┐┌┬┐  ╦  ╦  ╔╦╗  ╔╦╗┌─┐┌─┐
-╚═╗├┤ │  ├┤ ╠═╣│ │└─┐ │   ║  ║  ║║║  ║║║├─┤│  
-╚═╝└─┘┴─┘└  ╩ ╩└─┘└─┘ ┴   ╩═╝╩═╝╩ ╩  ╩ ╩┴ ┴└─┘`,
-    
-    // Style 3: Minimal Mac
-    `mac llm compatibility checker`,
-    
-    // Style 4: Classic
-    `  __  __    _    ____   _     _     __  __ 
- |  \\/  |  / \\  / ___| | |   | |   |  \\/  |
- | |\\/| | / _ \\| |     | |   | |   | |\\/| |
- | |  | |/ ___ \\ |___  | |___| |___| |  | |
- |_|  |_/_/   \\_\\____| |_____|_____|_|  |_|`
-];
+// ASCII Art Style - Circuit Board (Mac version)
+const asciiArt = `███▄ ▄███▓ ▄▄▄       ▄████▄      ██▓     ██▓     ███▄ ▄███▓
+▓██▒▀█▀ ██▒▒████▄    ▒██▀ ▀█     ▓██▒    ▓██▒    ▓██▒▀█▀ ██▒
+▓██    ▓██░▒██  ▀█▄  ▒▓█    ▄    ▒██░    ▒██░    ▓██    ▓██░
+▒██    ▒██ ░██▄▄▄▄██ ▒▓▓▄ ▄██▒   ▒██░    ▒██░    ▒██    ▒██ 
+▒██▒   ░██▒ ▓█   ▓██▒▒ ▓███▀ ░   ░██████▒░██████▒▒██▒   ░██▒
+░ ▒░   ░  ░ ▒▒   ▓▒█░░ ░▒ ▒  ░   ░ ▒░▓  ░░ ▒░▓  ░░ ▒░   ░  ░`;
 
-// Display random ASCII art on page load
-function displayRandomAsciiArt() {
-    const randomIndex = Math.floor(Math.random() * asciiArts.length);
+// Display ASCII art on page load
+function displayAsciiArt() {
     const asciiElement = document.getElementById('ascii-art');
     if (asciiElement) {
-        asciiElement.textContent = asciiArts[randomIndex];
+        asciiElement.textContent = asciiArt;
     }
 }
 
@@ -433,7 +414,7 @@ function copyShareLink() {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
-    displayRandomAsciiArt();
+    displayAsciiArt();
     loadFromURL();
 });
 
