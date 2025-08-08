@@ -481,6 +481,17 @@ optgroup {
     box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
 }
 
+/* Tool links styling */
+.tool-link {
+    color: #00ff00;
+    text-decoration: underline;
+}
+
+.tool-link:hover {
+    color: #39ff14;
+    text-shadow: 0 0 5px rgba(57, 255, 20, 0.3);
+}
+
 /* How calculated link */
 .how-calculated-link {
     display: block;
