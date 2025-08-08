@@ -127,6 +127,93 @@
         </div>
     </div>
     
+    <div class="performance-explanation-dialog" id="performanceExplanationDialog">
+        <h3>⚡ How GPU Performance is Estimated</h3>
+        
+        <div class="explanation-content">
+            <h4>The Formula:</h4>
+            <div class="formula-box">
+                <code>Tokens/sec = (Memory Bandwidth / Model Size) × Efficiency × Quantization Boost × Context Impact</code>
+            </div>
+            
+            <h4>Key Factors:</h4>
+            
+            <div class="step">
+                <strong>1. Memory Bandwidth</strong>
+                <p>GPU memory bandwidth is the primary bottleneck for LLM inference. Higher bandwidth = faster token generation.</p>
+                <ul>
+                    <li>RTX 4090: 1 TB/s</li>
+                    <li>A100: 1.6-2 TB/s</li>
+                    <li>H100: 3 TB/s</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <strong>2. Model Size Efficiency</strong>
+                <p>Smaller models achieve better utilization of memory bandwidth:</p>
+                <ul>
+                    <li>≤7B models: ~85% efficiency</li>
+                    <li>7-30B models: ~70% efficiency</li>
+                    <li>30-70B models: ~50% efficiency</li>
+                    <li>70B+ models: ~30% efficiency</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <strong>3. Quantization Speed Boost</strong>
+                <p>Lower precision allows faster computation and memory access:</p>
+                <ul>
+                    <li>INT3: 2.5× faster</li>
+                    <li>INT4: 2.2× faster</li>
+                    <li>INT8: 1.3× faster</li>
+                    <li>FP16: 1.0× (baseline)</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <strong>4. Context Length Impact</strong>
+                <p>Longer contexts require more memory operations:</p>
+                <ul>
+                    <li>≤8K tokens: 85% speed</li>
+                    <li>8-32K tokens: 60% speed</li>
+                    <li>32-128K tokens: 30% speed</li>
+                </ul>
+            </div>
+            
+            <div class="step">
+                <strong>5. Multi-GPU Scaling</strong>
+                <p>Multiple GPUs don't scale perfectly due to communication overhead:</p>
+                <ul>
+                    <li>2 GPUs: ~85% scaling efficiency</li>
+                    <li>4 GPUs: ~75% scaling efficiency</li>
+                    <li>8 GPUs: ~65% scaling efficiency</li>
+                </ul>
+            </div>
+            
+            <h4>Important Considerations:</h4>
+            <ul>
+                <li><strong>Framework matters:</strong> vLLM, TGI, and Ollama have different optimization levels</li>
+                <li><strong>Batch size affects throughput:</strong> Larger batches improve GPU utilization</li>
+                <li><strong>First token is slower:</strong> Initial prompt processing takes longer than generation</li>
+                <li><strong>Real-world variance:</strong> Actual performance varies ±20% based on specific configurations</li>
+                <li><strong>Professional GPUs:</strong> A100/H100 have better memory subsystems than consumer cards</li>
+            </ul>
+            
+            <h4>Performance Ratings:</h4>
+            <ul>
+                <li>🟢 <strong>Excellent (>100 tok/s):</strong> Real-time conversation, instant responses</li>
+                <li>🟢 <strong>Good (50-100 tok/s):</strong> Smooth interaction, minimal wait</li>
+                <li>🟡 <strong>Moderate (25-50 tok/s):</strong> Acceptable for most uses, some waiting</li>
+                <li>🟡 <strong>Slow (10-25 tok/s):</strong> Noticeable delays, patience required</li>
+                <li>🔴 <strong>Very Slow (<10 tok/s):</strong> Long waits, consider optimization</li>
+            </ul>
+        </div>
+        
+        <div class="share-dialog-buttons">
+            <button onclick="closePerformanceExplanation()">✖ Close</button>
+        </div>
+    </div>
+    
     <div class="container">
         <div class="mac-banner">
             <a href="/mac/" class="mac-banner-link">
@@ -387,6 +474,33 @@
             </div>
             
             <div id="warnings"></div>
+            
+            <!-- Performance Estimation Section -->
+            <div id="performance-section" class="performance-section" style="display: none;">
+                <div class="performance-title">
+                    ═══ PERFORMANCE ESTIMATION ═══
+                    <a href="#" class="how-calculated-link" onclick="showPerformanceExplanation(event)">How is this calculated?</a>
+                </div>
+                
+                <div class="performance-result">
+                    <div class="performance-metric">
+                        <span class="metric-label">Expected Speed:</span>
+                        <span class="metric-value" id="tokens-per-second">-</span>
+                    </div>
+                    
+                    <div class="performance-metric">
+                        <span class="metric-label">Time for 100 tokens:</span>
+                        <span class="metric-value" id="generation-time">-</span>
+                    </div>
+                    
+                    <div class="performance-metric">
+                        <span class="metric-label">Performance Rating:</span>
+                        <span class="metric-value" id="performance-rating">-</span>
+                    </div>
+                </div>
+                
+                <div id="performance-notes" class="performance-notes"></div>
+            </div>
         </div>
         
         <div class="info-box">
@@ -442,107 +556,5 @@
     </div>
 
     <script src="selfhost-llm.js"></script>
-    <script>
-        // ASCII Art Style - Circuit Board
-        const asciiArt = `▓█████ ▓█████  ██▓      █████▒██░ ██  ▒█████    ██████ ▄▄▄█████▓ ██▓     ██▓     ███▄ ▄███▓
-▒██    ▒██   ▀ ▓██▒    ▓██   ▒▓██░ ██▒▒██▒  ██▒▒██    ▒ ▓  ██▒ ▓▒▓██▒    ▓██▒    ▓██▒▀█▀ ██▒
-░ ▓██▄  ▒███   ▒██░    ▒████ ░▒██▀▀██░▒██░  ██▒░ ▓██▄   ▒ ▓██░ ▒░▒██░    ▒██░    ▓██    ▓██░
-  ▒   ██▒██  ▄ ▒██░    ░▓█▒  ░░▓█ ░██ ▒██   ██░  ▒   ██▒░ ▓██▓ ░ ▒██░    ▒██░    ▒██    ▒██ 
-▒██████▒░█████▒░██████▒░▒█░   ░▓█▒░██▓░ ████▓▒░▒██████▒▒  ▒██▒ ░ ░██████▒░██████▒▒██▒   ░██▒
-▒ ▒▓▒ ▒ ░░ ▒░ ░░ ▒░▓  ░ ▒ ░    ▒ ░░▒░▒░ ▒░▒░▒░ ▒ ▒▓▒ ▒ ░  ▒ ░░   ░ ▒░▓  ░░ ▒░▓  ░░ ▒░   ░  ░`;
-        
-        // Display ASCII art
-        function displayAsciiArt() {
-            const asciiElement = document.getElementById('ascii-art');
-            if (asciiElement) {
-                asciiElement.textContent = asciiArt;
-            }
-        }
-        
-        // Display ASCII art on page load
-        document.addEventListener('DOMContentLoaded', displayAsciiArt);
-        
-        function showShareDialog() {
-            const dialog = document.getElementById('shareDialog');
-            const overlay = document.getElementById('overlay');
-            const urlContainer = document.getElementById('shareUrl');
-            
-            // Get current URL with all parameters
-            urlContainer.textContent = window.location.href;
-            
-            dialog.classList.add('active');
-            overlay.classList.add('active');
-        }
-        
-        function closeShareDialog() {
-            const dialog = document.getElementById('shareDialog');
-            const overlay = document.getElementById('overlay');
-            
-            dialog.classList.remove('active');
-            overlay.classList.remove('active');
-        }
-        
-        function copyShareLink() {
-            const urlText = document.getElementById('shareUrl').textContent;
-            
-            // Copy to clipboard
-            navigator.clipboard.writeText(urlText).then(() => {
-                // Change button text temporarily to show success
-                const copyButton = event.target;
-                const originalText = copyButton.textContent;
-                copyButton.textContent = '✅ Copied!';
-                
-                setTimeout(() => {
-                    copyButton.textContent = originalText;
-                }, 2000);
-            }).catch(err => {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = urlText;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                
-                // Show success message
-                const copyButton = event.target;
-                const originalText = copyButton.textContent;
-                copyButton.textContent = '✅ Copied!';
-                
-                setTimeout(() => {
-                    copyButton.textContent = originalText;
-                }, 2000);
-            });
-        }
-        
-        // Show explanation dialog
-        function showHowCalculated(event) {
-            event.preventDefault();
-            const dialog = document.getElementById('explanationDialog');
-            const overlay = document.getElementById('overlay');
-            
-            dialog.classList.add('active');
-            overlay.classList.add('active');
-            overlay.onclick = closeExplanationDialog;
-        }
-        
-        // Close explanation dialog
-        function closeExplanationDialog() {
-            const dialog = document.getElementById('explanationDialog');
-            const overlay = document.getElementById('overlay');
-            
-            dialog.classList.remove('active');
-            overlay.classList.remove('active');
-            overlay.onclick = closeShareDialog;
-        }
-        
-        // Close dialog on Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeShareDialog();
-                closeExplanationDialog();
-            }
-        });
-    </script>
 </body>
 </html>

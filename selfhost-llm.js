@@ -98,6 +98,120 @@ function loadFromURL() {
     calculate();
 }
 
+// Get GPU memory bandwidth based on model
+function getGPUBandwidth(gpuModel) {
+    if (!gpuModel) return 0;
+    
+    const bandwidthMap = {
+        // RTX 40 Series
+        'rtx4090': 1008,
+        'rtx4080': 736,
+        'rtx4070ti': 504,
+        'rtx4070': 504,
+        'rtx4060ti': 288,
+        'rtx4060ti8': 288,
+        
+        // RTX 30 Series
+        'rtx3090ti': 936,
+        'rtx3090': 936,
+        'rtx3080ti': 912,
+        'rtx3080': 760,
+        
+        // NVIDIA Professional
+        'a100': 1600,  // 40GB variant
+        'a100-80': 2000,  // 80GB variant
+        'h100': 3000,
+        'v100': 900,
+        'rtx6000': 960,  // RTX 6000 Ada
+        'l40s': 864,
+        'l40': 864,
+        'l4': 300,
+        't4': 320,
+        
+        // AMD Radeon
+        'rx7900xtx': 960,
+        'rx7900xt': 800,
+        
+        // AMD Instinct
+        'mi300x': 5325,
+        'mi250x': 3200
+    };
+    
+    return bandwidthMap[gpuModel] || 0;
+}
+
+// Calculate performance estimate
+function calculatePerformance(modelMemory, quantization, contextLength, gpuModel, gpuCount) {
+    const bandwidth = getGPUBandwidth(gpuModel) * gpuCount;
+    if (!bandwidth) return null;
+    
+    // Get model parameters from preset if available
+    let modelParams = 7;
+    const modelInputType = document.querySelector('input[name="model-input-type"]:checked').value;
+    if (modelInputType === 'preset') {
+        const modelSelect = document.getElementById('model-preset');
+        modelParams = parseFloat(modelSelect.value) || 7;
+    } else if (modelInputType === 'parameters') {
+        modelParams = parseFloat(document.getElementById('model-parameters').value) || 7;
+    }
+    
+    // Model size efficiency factor (larger models are less efficient)
+    let efficiency = 0.8;
+    if (modelParams <= 7) {
+        efficiency = 0.85;
+    } else if (modelParams <= 30) {
+        efficiency = 0.7;
+    } else if (modelParams <= 70) {
+        efficiency = 0.5;
+    } else {
+        efficiency = 0.3;
+    }
+    
+    // Quantization speed boost
+    let quantBoost = 1.0;
+    if (quantization <= 0.25) {
+        quantBoost = 2.5;
+    } else if (quantization <= 0.3) {
+        quantBoost = 2.2;
+    } else if (quantization <= 0.5) {
+        quantBoost = 1.8;
+    } else if (quantization <= 0.75) {
+        quantBoost = 1.3;
+    }
+    
+    // Context length impact
+    let contextImpact = 1.0;
+    if (contextLength >= 131072) {
+        contextImpact = 0.3;
+    } else if (contextLength >= 32768) {
+        contextImpact = 0.6;
+    } else if (contextLength >= 8192) {
+        contextImpact = 0.85;
+    }
+    
+    // Multi-GPU scaling (not perfect linear scaling)
+    let multiGpuScaling = 1.0;
+    if (gpuCount > 1) {
+        multiGpuScaling = 0.85 + (0.15 / gpuCount);
+    }
+    
+    // Calculate tokens per second
+    // Formula: (bandwidth / model_memory_gb) * efficiency * quant_boost * context_impact * scaling
+    const baseSpeed = (bandwidth / modelMemory) * efficiency * quantBoost * contextImpact * multiGpuScaling;
+    
+    // Apply realistic scaling factor
+    const tokensPerSecond = baseSpeed * 0.6; // Conservative estimate for datacenter GPUs
+    
+    return {
+        tokensPerSecond: tokensPerSecond,
+        bandwidth: bandwidth,
+        efficiency: efficiency,
+        quantBoost: quantBoost,
+        contextImpact: contextImpact,
+        multiGpuScaling: multiGpuScaling
+    };
+}
+
 function updateGPUSpecs() {
     const select = document.getElementById('gpu-type');
     const vramInput = document.getElementById('vram-per-gpu');
@@ -212,6 +326,77 @@ function calculate() {
         warningsDiv.innerHTML += '<div class="warning">⚠ LOW MEMORY: Can handle less than 1 concurrent request with this context length!</div>';
     }
     
+    // Calculate and display performance if GPU is selected
+    const gpuType = document.getElementById('gpu-type').value;
+    const performanceSection = document.getElementById('performance-section');
+    
+    if (gpuType && availableMemory >= 0 && performanceSection) {
+        const perf = calculatePerformance(adjustedModelMemory, quantization, contextLength, gpuType, gpuCount);
+        
+        if (perf) {
+            performanceSection.style.display = 'block';
+            
+            // Update performance metrics
+            const tokensPerSec = Math.round(perf.tokensPerSecond);
+            document.getElementById('tokens-per-second').textContent = `${tokensPerSec} tokens/sec`;
+            
+            // Generation time for 100 tokens
+            const genTime = tokensPerSec > 0 ? (100 / tokensPerSec).toFixed(1) : 'N/A';
+            document.getElementById('generation-time').textContent = `${genTime} seconds`;
+            
+            // Performance rating
+            let rating = '';
+            let ratingClass = '';
+            if (tokensPerSec > 100) {
+                rating = '🟢 Excellent';
+                ratingClass = 'excellent';
+            } else if (tokensPerSec > 50) {
+                rating = '🟢 Good';
+                ratingClass = 'good';
+            } else if (tokensPerSec > 25) {
+                rating = '🟡 Moderate';
+                ratingClass = 'moderate';
+            } else if (tokensPerSec > 10) {
+                rating = '🟡 Slow';
+                ratingClass = 'slow';
+            } else {
+                rating = '🔴 Very Slow';
+                ratingClass = 'very-slow';
+            }
+            
+            const ratingElement = document.getElementById('performance-rating');
+            if (ratingElement) {
+                ratingElement.textContent = rating;
+                ratingElement.className = `metric-value ${ratingClass}`;
+            }
+            
+            // Performance notes
+            const notesDiv = document.getElementById('performance-notes');
+            if (notesDiv) {
+                let notes = [];
+                
+                if (tokensPerSec < 25) {
+                    notes.push('• Consider stronger quantization (INT4) for better speed');
+                }
+                if (contextLength > 32768 && tokensPerSec < 50) {
+                    notes.push('• Reduce context length for faster generation');
+                }
+                if (gpuCount === 1 && tokensPerSec < 30) {
+                    notes.push('• Consider adding more GPUs for better performance');
+                }
+                if (tokensPerSec > 50) {
+                    notes.push('• Performance should be smooth for most use cases');
+                }
+                
+                notesDiv.innerHTML = notes.length > 0 ? `<h4>Performance Tips:</h4>${notes.join('<br>')}` : '';
+            }
+        } else {
+            performanceSection.style.display = 'none';
+        }
+    } else if (performanceSection) {
+        performanceSection.style.display = 'none';
+    }
+    
     if (totalVRAM > 0) {
         document.getElementById('results').classList.remove('hidden');
     }
@@ -222,8 +407,127 @@ function calculate() {
     }
 }
 
+// ASCII Art Style - Circuit Board (GPU version)
+const asciiArt = `▓█████ ▓█████  ██▓      █████▒██░ ██  ▒█████    ██████ ▄▄▄█████▓ ██▓     ██▓     ███▄ ▄███▓
+▒██    ▒██   ▀ ▓██▒    ▓██   ▒▓██░ ██▒▒██▒  ██▒▒██    ▒ ▓  ██▒ ▓▒▓██▒    ▓██▒    ▓██▒▀█▀ ██▒
+▒▓██▄   ▒███   ▓██░    ▒████ ░▒██▀▀██░▒██░  ██▒▒▓██▄    ▒ ▓██░ ▒░▓██░    ▓██░    ▓██    ▓██░
+▒██  ▀█▄ ▒▓█  ▄ ▒██▄    ░▓█▒  ░░▓█ ░██ ▒██   ██░ ▒   ██▒░ ▓██▓ ░ ▒██▄    ▒██▄    ▒██    ▒██ 
+░██▄▄▄▄██░▒████▒░██████▒░▒█░   ░▓█▒░██▓░ ████▓▒░▒██████▒▒  ▒██▒ ░ ░██████▒░██████▒▒██▒   ░██▒
+ ▓█   ▓██▒░ ▒░ ░░ ▒░▓  ░ ▒ ░    ▒ ░░▒░▒░ ▒░▒░▒░ ▒ ▒▓▒ ▒ ░  ▒ ░░   ░ ▒░▓  ░░ ▒░▓  ░░ ▒░   ░  ░`;
+
+// Display ASCII art on page load
+function displayAsciiArt() {
+    const asciiElement = document.getElementById('ascii-art');
+    if (asciiElement) {
+        asciiElement.textContent = asciiArt;
+    }
+}
+
+// Share dialog functions
+function showShareDialog() {
+    const dialog = document.getElementById('shareDialog');
+    const overlay = document.getElementById('overlay');
+    const urlContainer = document.getElementById('shareUrl');
+    
+    urlContainer.textContent = window.location.href;
+    
+    dialog.classList.add('active');
+    overlay.classList.add('active');
+}
+
+function closeShareDialog() {
+    const dialog = document.getElementById('shareDialog');
+    const overlay = document.getElementById('overlay');
+    
+    dialog.classList.remove('active');
+    overlay.classList.remove('active');
+}
+
+function copyShareLink() {
+    const urlText = document.getElementById('shareUrl').textContent;
+    
+    navigator.clipboard.writeText(urlText).then(() => {
+        const copyButton = event.target;
+        const originalText = copyButton.textContent;
+        copyButton.textContent = '✅ Copied!';
+        
+        setTimeout(() => {
+            copyButton.textContent = originalText;
+        }, 2000);
+    }).catch(err => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = urlText;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        const copyButton = event.target;
+        const originalText = copyButton.textContent;
+        copyButton.textContent = '✅ Copied!';
+        
+        setTimeout(() => {
+            copyButton.textContent = originalText;
+        }, 2000);
+    });
+}
+
+// Show explanation dialog
+function showHowCalculated(event) {
+    event.preventDefault();
+    const dialog = document.getElementById('explanationDialog');
+    const overlay = document.getElementById('overlay');
+    
+    dialog.classList.add('active');
+    overlay.classList.add('active');
+    overlay.onclick = closeExplanationDialog;
+}
+
+// Close explanation dialog
+function closeExplanationDialog() {
+    const dialog = document.getElementById('explanationDialog');
+    const overlay = document.getElementById('overlay');
+    
+    dialog.classList.remove('active');
+    overlay.classList.remove('active');
+    overlay.onclick = closeShareDialog;
+}
+
+// Show performance explanation dialog
+function showPerformanceExplanation(event) {
+    event.preventDefault();
+    const dialog = document.getElementById('performanceExplanationDialog');
+    const overlay = document.getElementById('overlay');
+    
+    dialog.classList.add('active');
+    overlay.classList.add('active');
+    overlay.onclick = closePerformanceExplanation;
+}
+
+// Close performance explanation dialog
+function closePerformanceExplanation() {
+    const dialog = document.getElementById('performanceExplanationDialog');
+    const overlay = document.getElementById('overlay');
+    
+    dialog.classList.remove('active');
+    overlay.classList.remove('active');
+    overlay.onclick = closeShareDialog;
+}
+
+// Close dialog on Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeShareDialog();
+        closeExplanationDialog();
+        closePerformanceExplanation();
+    }
+});
+
 // Initialize on page load
 window.onload = function() {
+    displayAsciiArt();
+    
     // First check if we have URL parameters
     if (window.location.search) {
         loadFromURL();

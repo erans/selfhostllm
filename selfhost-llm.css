@@ -594,6 +594,135 @@ option {
     color: #ffff00;
 }
 
+/* Performance section styles */
+.performance-section {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(0, 100, 255, 0.05);
+    border: 1px solid #00ffff;
+    border-radius: 4px;
+}
+
+.performance-title {
+    color: #00ffff;
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.performance-result {
+    margin: 15px 0;
+}
+
+.performance-metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    margin: 8px 0;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.metric-label {
+    color: #00ffff;
+    font-size: 13px;
+}
+
+.metric-value {
+    color: #ffff00;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Performance rating colors */
+.metric-value.excellent {
+    color: #00ff00;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+.metric-value.good {
+    color: #39ff14;
+}
+
+.metric-value.moderate {
+    color: #ffff00;
+}
+
+.metric-value.slow {
+    color: #ffa500;
+}
+
+.metric-value.very-slow {
+    color: #ff6666;
+    text-shadow: 0 0 5px rgba(255, 102, 102, 0.5);
+}
+
+.performance-notes {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-left: 3px solid #00ffff;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #00ff00;
+}
+
+.performance-notes h4 {
+    color: #00ffff;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+/* Performance explanation dialog styles */
+.performance-explanation-dialog {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #0a0a0a;
+    border: 2px solid #00ffff;
+    border-radius: 8px;
+    padding: 25px;
+    z-index: 2000;
+    max-width: 750px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+}
+
+.performance-explanation-dialog.active {
+    display: block;
+}
+
+.performance-explanation-dialog h3 {
+    color: #00ffff;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 20px;
+    border-bottom: 1px solid #00ffff;
+    padding-bottom: 10px;
+}
+
+.performance-explanation-dialog h4 {
+    color: #39ff14;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.performance-explanation-dialog .step {
+    background: rgba(0, 255, 255, 0.02);
+    border-left: 3px solid #00ffff;
+}
+
+.performance-explanation-dialog ul li {
+    margin: 10px 0;
+}
+
 /* Mobile and Tablet Styles */
 @media (max-width: 768px) {
     .calculator-grid {
@@ -783,6 +912,36 @@ option {
     .step code {
         font-size: 11px;
         padding: 5px;
+    }
+    
+    /* Performance section mobile */
+    .performance-section {
+        padding: 15px;
+        margin-top: 15px;
+    }
+    
+    .performance-title {
+        font-size: 14px;
+    }
+    
+    .performance-metric {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+    }
+    
+    .metric-label {
+        margin-bottom: 5px;
+    }
+    
+    .performance-explanation-dialog {
+        width: 95%;
+        padding: 15px;
+        max-height: 90vh;
+    }
+    
+    .performance-explanation-dialog h3 {
+        font-size: 16px;
     }
 }
 
