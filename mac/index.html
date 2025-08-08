@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SelfHostLLM Mac - Check LLM Compatibility for Your Mac</title>
+    
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="SelfHostLLM Mac - Check LLM Compatibility for Your Mac">
+    <meta name="description" content="Check which LLMs can run on your Mac. Calculate memory requirements based on your Mac's RAM for Llama, Qwen, DeepSeek, Mistral and more.">
+    <meta name="keywords" content="LLM, Mac, macOS, Apple Silicon, M1, M2, M3, RAM calculator, self-hosted AI, Llama, Qwen, DeepSeek, Mistral, memory requirements">
+    <meta name="author" content="Eran Sandler">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://selfhostllm.org/mac">
+    <meta property="og:title" content="SelfHostLLM Mac - Check LLM Compatibility for Your Mac">
+    <meta property="og:description" content="Check which LLMs can run on your Mac based on available RAM.">
+    <meta property="og:image" content="https://selfhostllm.org/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="SelfHostLLM Mac">
+    
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://selfhostllm.org/mac">
+    <meta name="twitter:title" content="SelfHostLLM Mac - Check LLM Compatibility for Your Mac">
+    <meta name="twitter:description" content="Check which LLMs can run on your Mac based on available RAM.">
+    <meta name="twitter:image" content="https://selfhostllm.org/og-image.png">
+    <meta name="twitter:creator" content="@erans">
+    
+    <!-- Additional Meta Tags -->
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="theme-color" content="#00ff00">
+    <link rel="canonical" href="https://selfhostllm.org/mac">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <link rel="stylesheet" href="selfhost-llm-mac.css">
+</head>
+<body>
+    <button class="share-button" onclick="showShareDialog()" title="Share Configuration">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="currentColor"/>
+        </svg>
+    </button>
+    
+    <div class="overlay" id="overlay" onclick="closeShareDialog()"></div>
+    
+    <div class="share-dialog" id="shareDialog">
+        <h3>📤 Share Configuration</h3>
+        <p>Share this link with others to load the same configuration:</p>
+        <div class="share-url-container" id="shareUrl"></div>
+        <div class="share-dialog-buttons">
+            <button onclick="copyShareLink()">📋 Copy Link</button>
+            <button onclick="closeShareDialog()">✖ Close</button>
+        </div>
+    </div>
+    
+    <div class="explanation-dialog" id="explanationDialog">
+        <h3>📊 How Mac LLM Compatibility is Calculated</h3>
+        
+        <div class="explanation-content">
+            <h4>The Formula:</h4>
+            <div class="formula-box">
+                <code>Can Run = (Available RAM ≥ Model Memory + KV Cache)</code>
+            </div>
+            
+            <h4>Step-by-Step Breakdown:</h4>
+            
+            <div class="step">
+                <strong>1. Total RAM Available</strong>
+                <code>Total RAM = Your Mac's Unified Memory</code>
+                <p>Example: MacBook Pro M4 with 32GB RAM</p>
+                <p>Apple Silicon uses unified memory shared between CPU and GPU.</p>
+            </div>
+            
+            <div class="step">
+                <strong>2. Available RAM for LLM</strong>
+                <code>Available RAM = Total RAM - System Overhead</code>
+                <p>Example: 32GB - 4GB = 28GB available</p>
+                <p>Reserve memory for macOS and other applications.</p>
+            </div>
+            
+            <div class="step">
+                <strong>3. Model Memory (Adjusted for Quantization)</strong>
+                <code>Model Memory = Base Model Size × Quantization Factor</code>
+                <p>Example: 14GB (7B model) × 0.5 (INT4) = 7GB</p>
+                <p>The model weights need to be loaded entirely into RAM.</p>
+            </div>
+            
+            <div class="step">
+                <strong>4. KV Cache for Context</strong>
+                <code>KV Cache = Context Length × Memory per Token</code>
+                <p>Example: 8192 tokens × 0.00014GB = 1.15GB</p>
+                <p>Memory needed for the attention mechanism during inference.</p>
+            </div>
+            
+            <div class="step">
+                <strong>5. Total Memory Required</strong>
+                <code>Total Required = Model Memory + KV Cache</code>
+                <p>Example: 7GB + 1.15GB = 8.15GB</p>
+            </div>
+            
+            <div class="step">
+                <strong>6. Memory Margin</strong>
+                <code>Margin = Available RAM - Total Required</code>
+                <p>Example: 28GB - 8.15GB = +19.85GB (plenty of room!)</p>
+            </div>
+            
+            <h4>Compatibility Status Meanings:</h4>
+            <ul>
+                <li><strong>✓ Compatible (≥2GB margin):</strong> Model will run comfortably with room for other tasks</li>
+                <li><strong>⚠ Tight Fit (0-2GB margin):</strong> Model will run but close other apps for best performance</li>
+                <li><strong>✗ Incompatible (&lt;0GB margin):</strong> Not enough RAM - try quantization or smaller model</li>
+            </ul>
+            
+            <h4>Mac-Specific Considerations:</h4>
+            <ul>
+                <li>Apple Silicon Macs use unified memory architecture (no separate VRAM)</li>
+                <li>Metal Performance Shaders provide GPU acceleration for inference</li>
+                <li>Memory bandwidth varies by chip: M4 (120GB/s), M4 Pro (273GB/s), M4 Max (546GB/s), M3 Ultra (819GB/s)</li>
+                <li>Larger models benefit from Pro/Max chips' higher bandwidth</li>
+                <li>Tools like Ollama, LM Studio, and llama.cpp are optimized for Apple Silicon</li>
+                <li>Quantization (INT4/INT8) significantly reduces memory requirements</li>
+            </ul>
+        </div>
+        
+        <div class="share-dialog-buttons">
+            <button onclick="closeExplanationDialog()">✖ Close</button>
+        </div>
+    </div>
+    
+    <div class="performance-explanation-dialog" id="performanceExplanationDialog">
+        <h3>🚀 How Performance is Estimated</h3>
+        
+        <div class="explanation-content">
+            <h4>The Performance Formula:</h4>
+            <div class="formula-box">
+                <code>Tokens/sec ≈ (Memory Bandwidth / Active Model Size) × Efficiency Factor × Quantization Boost</code>
+            </div>
+            
+            <h4>Key Factors Affecting Performance:</h4>
+            
+            <div class="step">
+                <strong>1. Memory Bandwidth by Chip</strong>
+                <code>The maximum data transfer rate between memory and processors</code>
+                <p>• M4: 120 GB/s bandwidth</p>
+                <p>• M4 Pro: 273 GB/s bandwidth (2.3x faster)</p>
+                <p>• M4 Max: 546 GB/s bandwidth (4.5x faster)</p>
+                <p>• M2 Ultra: 800 GB/s bandwidth (6.7x faster)</p>
+                <p>• M3 Ultra: 819 GB/s bandwidth (6.8x faster)</p>
+            </div>
+            
+            <div class="step">
+                <strong>2. Model Size Efficiency</strong>
+                <code>Smaller models achieve better bandwidth utilization</code>
+                <p>• ≤7B models: 70-90% efficiency</p>
+                <p>• 7B-30B models: 50-70% efficiency</p>
+                <p>• 30B-70B models: 30-50% efficiency</p>
+                <p>• >70B models: 20-30% efficiency</p>
+            </div>
+            
+            <div class="step">
+                <strong>3. Quantization Speed Boost</strong>
+                <code>Lower precision = faster computation</code>
+                <p>• FP16: Baseline speed (1.0x)</p>
+                <p>• INT8: 30-50% faster (1.3-1.5x)</p>
+                <p>• INT4: 80-120% faster (1.8-2.2x)</p>
+                <p>• Extreme quantization: 100-150% faster (2.0-2.5x)</p>
+            </div>
+            
+            <div class="step">
+                <strong>4. Context Length Impact</strong>
+                <code>Longer context = more memory operations = slower speed</code>
+                <p>• 2K context: ~100% of max speed</p>
+                <p>• 8K context: ~90% of max speed</p>
+                <p>• 32K context: ~70% of max speed</p>
+                <p>• 128K+ context: ~40-50% of max speed</p>
+            </div>
+            
+            <h4>Performance Ratings Explained:</h4>
+            <ul>
+                <li><strong>🟢 Excellent (>50 tok/s):</strong> Real-time conversation, instant responses</li>
+                <li><strong>🟢 Good (30-50 tok/s):</strong> Smooth interaction, minimal waiting</li>
+                <li><strong>🟡 Moderate (15-30 tok/s):</strong> Usable with slight delays</li>
+                <li><strong>🟡 Slow (8-15 tok/s):</strong> Noticeable waiting between responses</li>
+                <li><strong>🔴 Very Slow (<8 tok/s):</strong> Long waits, consider smaller model</li>
+            </ul>
+            
+            <h4>Implementation Variations:</h4>
+            <ul>
+                <li><strong>llama.cpp:</strong> Fastest, optimized C++ implementation (our baseline)</li>
+                <li><strong>Ollama:</strong> ~90-95% of llama.cpp speed, easier to use</li>
+                <li><strong>LM Studio:</strong> ~85-90% of llama.cpp speed, great UI</li>
+                <li><strong>MLX:</strong> Apple's framework, ~80-85% speed, best for fine-tuning</li>
+                <li><strong>Transformers (Python):</strong> ~60-70% speed, most flexible</li>
+            </ul>
+            
+            <h4>Important Disclaimers:</h4>
+            <ul>
+                <li>These are <strong>estimates</strong> based on typical performance benchmarks</li>
+                <li>Actual performance varies by ±30% depending on specific model architecture</li>
+                <li>Mixture of Experts (MoE) models like Mixtral may perform differently</li>
+                <li>First token latency is typically slower than generation speed</li>
+                <li>Background processes and thermal throttling can affect performance</li>
+                <li>Models with longer training context may have optimizations not reflected here</li>
+            </ul>
+        </div>
+        
+        <div class="share-dialog-buttons">
+            <button onclick="closePerformanceExplanation()">✖ Close</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="ascii-art" id="ascii-art"></div>
+            <div class="subtitle">Check Which LLMs Can Run on Your Mac</div>
+        </div>
+        
+        <div class="calculator-grid">
+            <div class="section">
+                <div class="section-title">› Mac Configuration</div>
+                
+                <div class="form-group">
+                    <label for="mac-model">Mac Model (Optional):</label>
+                    <select id="mac-model" onchange="updateMacSpecs();">
+                        <option value="">Select your Mac...</option>
+                        <optgroup label="MacBook Pro">
+                            <option value="mbp-m4-max-128" data-ram="128">MacBook Pro M4 Max (128GB)</option>
+                            <option value="mbp-m4-max-64" data-ram="64">MacBook Pro M4 Max (64GB)</option>
+                            <option value="mbp-m4-max-48" data-ram="48">MacBook Pro M4 Max (48GB)</option>
+                            <option value="mbp-m4-max-36" data-ram="36">MacBook Pro M4 Max (36GB)</option>
+                            <option value="mbp-m4-pro-64" data-ram="64">MacBook Pro M4 Pro (64GB)</option>
+                            <option value="mbp-m4-pro-48" data-ram="48">MacBook Pro M4 Pro (48GB)</option>
+                            <option value="mbp-m4-pro-24" data-ram="24">MacBook Pro M4 Pro (24GB)</option>
+                            <option value="mbp-m4-32" data-ram="32">MacBook Pro M4 (32GB)</option>
+                            <option value="mbp-m4-24" data-ram="24">MacBook Pro M4 (24GB)</option>
+                            <option value="mbp-m4-16" data-ram="16">MacBook Pro M4 (16GB)</option>
+                            <option value="mbp-m3-max-128" data-ram="128">MacBook Pro M3 Max (128GB)</option>
+                            <option value="mbp-m3-max-96" data-ram="96">MacBook Pro M3 Max (96GB)</option>
+                            <option value="mbp-m3-max-64" data-ram="64">MacBook Pro M3 Max (64GB)</option>
+                            <option value="mbp-m3-max-48" data-ram="48">MacBook Pro M3 Max (48GB)</option>
+                            <option value="mbp-m3-max-36" data-ram="36">MacBook Pro M3 Max (36GB)</option>
+                            <option value="mbp-m3-pro-36" data-ram="36">MacBook Pro M3 Pro (36GB)</option>
+                            <option value="mbp-m3-pro-18" data-ram="18">MacBook Pro M3 Pro (18GB)</option>
+                            <option value="mbp-m3-24" data-ram="24">MacBook Pro M3 (24GB)</option>
+                            <option value="mbp-m3-18" data-ram="18">MacBook Pro M3 (18GB)</option>
+                            <option value="mbp-m3-8" data-ram="8">MacBook Pro M3 (8GB)</option>
+                            <option value="mbp-m2-max-96" data-ram="96">MacBook Pro M2 Max (96GB)</option>
+                            <option value="mbp-m2-max-64" data-ram="64">MacBook Pro M2 Max (64GB)</option>
+                            <option value="mbp-m2-max-48" data-ram="48">MacBook Pro M2 Max (48GB)</option>
+                            <option value="mbp-m2-max-38" data-ram="38">MacBook Pro M2 Max (38GB)</option>
+                            <option value="mbp-m2-max-32" data-ram="32">MacBook Pro M2 Max (32GB)</option>
+                            <option value="mbp-m2-pro-32" data-ram="32">MacBook Pro M2 Pro (32GB)</option>
+                            <option value="mbp-m2-pro-16" data-ram="16">MacBook Pro M2 Pro (16GB)</option>
+                            <option value="mbp-m2-24" data-ram="24">MacBook Pro M2 (24GB)</option>
+                            <option value="mbp-m2-16" data-ram="16">MacBook Pro M2 (16GB)</option>
+                            <option value="mbp-m2-8" data-ram="8">MacBook Pro M2 (8GB)</option>
+                            <option value="mbp-m1-max-64" data-ram="64">MacBook Pro M1 Max (64GB)</option>
+                            <option value="mbp-m1-max-32" data-ram="32">MacBook Pro M1 Max (32GB)</option>
+                            <option value="mbp-m1-pro-32" data-ram="32">MacBook Pro M1 Pro (32GB)</option>
+                            <option value="mbp-m1-pro-16" data-ram="16">MacBook Pro M1 Pro (16GB)</option>
+                            <option value="mbp-m1-16" data-ram="16">MacBook Pro M1 (16GB)</option>
+                            <option value="mbp-m1-8" data-ram="8">MacBook Pro M1 (8GB)</option>
+                        </optgroup>
+                        <optgroup label="MacBook Air">
+                            <option value="mba-m3-24" data-ram="24">MacBook Air M3 (24GB)</option>
+                            <option value="mba-m3-16" data-ram="16">MacBook Air M3 (16GB)</option>
+                            <option value="mba-m3-8" data-ram="8">MacBook Air M3 (8GB)</option>
+                            <option value="mba-m2-24" data-ram="24">MacBook Air M2 (24GB)</option>
+                            <option value="mba-m2-16" data-ram="16">MacBook Air M2 (16GB)</option>
+                            <option value="mba-m2-8" data-ram="8">MacBook Air M2 (8GB)</option>
+                            <option value="mba-m1-16" data-ram="16">MacBook Air M1 (16GB)</option>
+                            <option value="mba-m1-8" data-ram="8">MacBook Air M1 (8GB)</option>
+                        </optgroup>
+                        <optgroup label="Mac Studio">
+                            <option value="studio-m3-ultra-512" data-ram="512">Mac Studio M3 Ultra (512GB)</option>
+                            <option value="studio-m3-ultra-256" data-ram="256">Mac Studio M3 Ultra (256GB)</option>
+                            <option value="studio-m3-ultra-192" data-ram="192">Mac Studio M3 Ultra (192GB)</option>
+                            <option value="studio-m3-ultra-128" data-ram="128">Mac Studio M3 Ultra (128GB)</option>
+                            <option value="studio-m3-ultra-96" data-ram="96">Mac Studio M3 Ultra (96GB)</option>
+                            <option value="studio-m4-max-128" data-ram="128">Mac Studio M4 Max (128GB)</option>
+                            <option value="studio-m4-max-64" data-ram="64">Mac Studio M4 Max (64GB)</option>
+                            <option value="studio-m4-max-48" data-ram="48">Mac Studio M4 Max (48GB)</option>
+                            <option value="studio-m4-max-36" data-ram="36">Mac Studio M4 Max (36GB)</option>
+                            <option value="studio-m2-ultra-192" data-ram="192">Mac Studio M2 Ultra (192GB)</option>
+                            <option value="studio-m2-ultra-128" data-ram="128">Mac Studio M2 Ultra (128GB)</option>
+                            <option value="studio-m2-ultra-64" data-ram="64">Mac Studio M2 Ultra (64GB)</option>
+                            <option value="studio-m2-max-96" data-ram="96">Mac Studio M2 Max 38-core GPU (96GB)</option>
+                            <option value="studio-m2-max-64" data-ram="64">Mac Studio M2 Max (64GB)</option>
+                            <option value="studio-m2-max-32" data-ram="32">Mac Studio M2 Max (32GB)</option>
+                            <option value="studio-m1-ultra-128" data-ram="128">Mac Studio M1 Ultra (128GB)</option>
+                            <option value="studio-m1-ultra-64" data-ram="64">Mac Studio M1 Ultra (64GB)</option>
+                            <option value="studio-m1-max-64" data-ram="64">Mac Studio M1 Max (64GB)</option>
+                            <option value="studio-m1-max-32" data-ram="32">Mac Studio M1 Max (32GB)</option>
+                        </optgroup>
+                        <optgroup label="Mac mini">
+                            <option value="mini-m4-pro-64" data-ram="64">Mac mini M4 Pro (64GB)</option>
+                            <option value="mini-m4-pro-48" data-ram="48">Mac mini M4 Pro (48GB)</option>
+                            <option value="mini-m4-pro-24" data-ram="24">Mac mini M4 Pro (24GB)</option>
+                            <option value="mini-m4-32" data-ram="32">Mac mini M4 (32GB)</option>
+                            <option value="mini-m4-24" data-ram="24">Mac mini M4 (24GB)</option>
+                            <option value="mini-m4-16" data-ram="16">Mac mini M4 (16GB)</option>
+                            <option value="mini-m2-pro-32" data-ram="32">Mac mini M2 Pro (32GB)</option>
+                            <option value="mini-m2-pro-16" data-ram="16">Mac mini M2 Pro (16GB)</option>
+                            <option value="mini-m2-24" data-ram="24">Mac mini M2 (24GB)</option>
+                            <option value="mini-m2-16" data-ram="16">Mac mini M2 (16GB)</option>
+                            <option value="mini-m2-8" data-ram="8">Mac mini M2 (8GB)</option>
+                            <option value="mini-m1-16" data-ram="16">Mac mini M1 (16GB)</option>
+                            <option value="mini-m1-8" data-ram="8">Mac mini M1 (8GB)</option>
+                        </optgroup>
+                        <optgroup label="iMac">
+                            <option value="imac-m4-32" data-ram="32">iMac M4 (32GB)</option>
+                            <option value="imac-m4-24" data-ram="24">iMac M4 (24GB)</option>
+                            <option value="imac-m4-16" data-ram="16">iMac M4 (16GB)</option>
+                            <option value="imac-m3-24" data-ram="24">iMac M3 (24GB)</option>
+                            <option value="imac-m3-16" data-ram="16">iMac M3 (16GB)</option>
+                            <option value="imac-m3-8" data-ram="8">iMac M3 (8GB)</option>
+                            <option value="imac-m1-16" data-ram="16">iMac M1 (16GB)</option>
+                            <option value="imac-m1-8" data-ram="8">iMac M1 (8GB)</option>
+                        </optgroup>
+                        <optgroup label="Mac Pro">
+                            <option value="macpro-m2-ultra-192" data-ram="192">Mac Pro M2 Ultra (192GB)</option>
+                            <option value="macpro-m2-ultra-128" data-ram="128">Mac Pro M2 Ultra (128GB)</option>
+                            <option value="macpro-m2-ultra-64" data-ram="64">Mac Pro M2 Ultra (64GB)</option>
+                        </optgroup>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="mac-ram">Mac RAM (GB):</label>
+                    <input type="number" id="mac-ram" min="8" max="192" value="16" step="8" oninput="checkCompatibility();">
+                    <small class="help-text">Enter your Mac's total RAM in GB</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="system-overhead">System Overhead (GB):</label>
+                    <input type="number" id="system-overhead" min="2" max="16" value="4" step="1" oninput="checkCompatibility();">
+                    <small class="help-text">Memory reserved for macOS and other apps</small>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">› Model Selection</div>
+                
+                <div class="form-group">
+                    <label for="model-preset">Select Model:</label>
+                    <select id="model-preset" onchange="updateModelSelection()">
+                        <optgroup label="Meta Llama">
+                            <option value="7" data-memory="14" data-quant="1.0">Llama 3 8B (~14GB)</option>
+                            <option value="70" data-memory="140" data-quant="1.0">Llama 3 70B (~140GB)</option>
+                            <option value="70" data-memory="140" data-quant="1.0">Llama 3.1 70B (~140GB)</option>
+                            <option value="405" data-memory="810" data-quant="0.5">Llama 3.1 405B (~810GB)</option>
+                        </optgroup>
+                        <optgroup label="Alibaba Qwen">
+                            <option value="1.8" data-memory="3.6" data-quant="1.0">Qwen 2B (~3.6GB)</option>
+                            <option value="7" data-memory="14" data-quant="1.0">Qwen 7B (~14GB)</option>
+                            <option value="14" data-memory="28" data-quant="1.0">Qwen 14B (~28GB)</option>
+                            <option value="32" data-memory="64" data-quant="0.5">Qwen 32B (~64GB)</option>
+                            <option value="72" data-memory="144" data-quant="0.5">Qwen 72B (~144GB)</option>
+                            <option value="110" data-memory="220" data-quant="0.5">Qwen 110B (~220GB)</option>
+                        </optgroup>
+                        <optgroup label="Qwen Coder">
+                            <option value="1.5" data-memory="3" data-quant="1.0">Qwen-Coder 1.5B (~3GB)</option>
+                            <option value="7" data-memory="14" data-quant="1.0">Qwen-Coder 7B (~14GB)</option>
+                            <option value="32" data-memory="64" data-quant="0.5">Qwen-Coder 32B (~64GB)</option>
+                        </optgroup>
+                        <optgroup label="DeepSeek">
+                            <option value="7" data-memory="14" data-quant="1.0">DeepSeek 7B (~14GB)</option>
+                            <option value="16" data-memory="32" data-quant="1.0">DeepSeek 16B (~32GB)</option>
+                            <option value="67" data-memory="134" data-quant="0.5">DeepSeek 67B (~134GB)</option>
+                            <option value="236" data-memory="472" data-quant="0.5">DeepSeek 236B (~472GB)</option>
+                            <option value="671" data-memory="720" data-quant="0.25">DeepSeek-R1 671B (~720GB)</option>
+                        </optgroup>
+                        <optgroup label="Mistral">
+                            <option value="7" data-memory="14" data-quant="1.0">Mistral 7B (~14GB)</option>
+                            <option value="12" data-memory="24" data-quant="1.0">Mistral-Nemo 12B (~24GB)</option>
+                            <option value="22" data-memory="44" data-quant="0.5">Mistral-Small 22B (~44GB)</option>
+                            <option value="123" data-memory="246" data-quant="0.5">Mistral-Large 123B (~246GB)</option>
+                        </optgroup>
+                        <optgroup label="Mixtral">
+                            <option value="8" data-memory="16" data-quant="0.5">Mixtral 8x7B (~94GB total, ~16GB active)</option>
+                            <option value="8" data-memory="45" data-quant="0.5">Mixtral 8x22B (~282GB total, ~45GB active)</option>
+                        </optgroup>
+                        <optgroup label="OpenAI GPT">
+                            <option value="20.9" data-memory="42" data-quant="0.3">GPT-OSS 20B (~42GB FP16, ~16GB MXFP4)</option>
+                            <option value="116.8" data-memory="234" data-quant="0.3">GPT-OSS 120B (~234GB FP16, ~61GB MXFP4)</option>
+                            <option value="6" data-memory="12" data-quant="1.0">GPT-J 6B (~12GB)</option>
+                            <option value="2.7" data-memory="5.4" data-quant="1.0">GPT-Neo 2.7B (~5.4GB)</option>
+                            <option value="20" data-memory="40" data-quant="0.5">GPT-NeoX 20B (~40GB)</option>
+                        </optgroup>
+                        <optgroup label="Google">
+                            <option value="2" data-memory="4" data-quant="1.0">Gemma 2B (~4GB)</option>
+                            <option value="7" data-memory="14" data-quant="1.0">Gemma 7B (~14GB)</option>
+                            <option value="27" data-memory="54" data-quant="0.5">Gemma-2 27B (~54GB)</option>
+                        </optgroup>
+                        <optgroup label="Microsoft">
+                            <option value="3.8" data-memory="7.6" data-quant="1.0">Phi-3 Mini 3.8B (~7.6GB)</option>
+                            <option value="7" data-memory="14" data-quant="1.0">Phi-3 Small 7B (~14GB)</option>
+                            <option value="14" data-memory="28" data-quant="1.0">Phi-3 Medium 14B (~28GB)</option>
+                        </optgroup>
+                        <optgroup label="Other Models">
+                            <option value="6" data-memory="12" data-quant="1.0">Yi 6B (~12GB)</option>
+                            <option value="34" data-memory="68" data-quant="0.5">Yi 34B (~68GB)</option>
+                            <option value="34" data-memory="68" data-quant="0.5">CodeLlama 34B (~68GB)</option>
+                            <option value="40" data-memory="80" data-quant="0.5">Falcon 40B (~80GB)</option>
+                            <option value="180" data-memory="360" data-quant="0.5">Falcon 180B (~360GB)</option>
+                        </optgroup>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="quantization">Quantization:</label>
+                    <select id="quantization" onchange="checkCompatibility();">
+                        <option value="1.0">FP16/BF16 (Full Precision)</option>
+                        <option value="0.75">INT8 (~25% reduction)</option>
+                        <option value="0.5">INT4 (~50% reduction)</option>
+                        <option value="0.3">MXFP4 (~70% reduction)</option>
+                        <option value="0.25">Extreme Quant (~75% reduction)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="context-length">Context Length:</label>
+                    <select id="context-length" onchange="checkCompatibility();">
+                        <option value="2048">2K tokens</option>
+                        <option value="4096">4K tokens</option>
+                        <option value="8192" selected>8K tokens</option>
+                        <option value="16384">16K tokens</option>
+                        <option value="32768">32K tokens</option>
+                        <option value="65536">64K tokens</option>
+                        <option value="131072">128K tokens</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <button class="calculate-btn" onclick="checkCompatibility()">» CHECK COMPATIBILITY «</button>
+        
+        <div id="results" class="results hidden">
+            <div class="results-title">
+                ═══ COMPATIBILITY CHECK ═══
+                <a href="#" class="how-calculated-link" onclick="showHowCalculated(event)">How is this calculated?</a>
+            </div>
+            
+            <div class="compatibility-status" id="compatibility-status">
+                <!-- Status will be inserted here -->
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">Total RAM:</span>
+                <span class="result-value" id="total-ram">-</span>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">Available for LLM:</span>
+                <span class="result-value" id="available-ram">-</span>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">Model Memory Required:</span>
+                <span class="result-value" id="model-memory">-</span>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">KV Cache Required:</span>
+                <span class="result-value" id="kv-cache-memory">-</span>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">Total Memory Needed:</span>
+                <span class="result-value" id="total-memory-needed">-</span>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">Memory Margin:</span>
+                <span class="result-value" id="memory-margin">-</span>
+            </div>
+            
+            <div class="performance-section" id="performance-section">
+                <div class="performance-title">
+                    ═══ PERFORMANCE ESTIMATE ═══
+                    <a href="#" class="how-calculated-link" onclick="showPerformanceExplanation(event)">How is performance estimated?</a>
+                </div>
+                
+                <div class="performance-result">
+                    <div class="performance-metric">
+                        <span class="metric-label">Estimated Speed:</span>
+                        <span class="metric-value" id="tokens-per-second">-</span>
+                    </div>
+                    
+                    <div class="performance-metric">
+                        <span class="metric-label">Generation Time (100 tokens):</span>
+                        <span class="metric-value" id="generation-time">-</span>
+                    </div>
+                    
+                    <div class="performance-metric">
+                        <span class="metric-label">Performance Rating:</span>
+                        <span class="metric-value" id="performance-rating">-</span>
+                    </div>
+                </div>
+                
+                <div id="performance-notes" class="performance-notes"></div>
+            </div>
+            
+            <div id="recommendations" class="recommendations"></div>
+        </div>
+        
+        <div class="info-box">
+            <div class="info-title">› MAC COMPATIBILITY NOTES</div>
+            • Apple Silicon Macs use unified memory shared between CPU and GPU<br>
+            • Metal Performance Shaders (MPS) provide GPU acceleration for ML tasks<br>
+            • Recommended to leave 4-8GB for system and other applications<br>
+            • Larger context lengths require significantly more memory<br>
+            • Use tools like Ollama, LM Studio, or llama.cpp for running models<br>
+            • Quantization can help fit larger models but may reduce quality
+        </div>
+        
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="copyright">
+                    Copyright © 2025 Eran Sandler
+                </div>
+                <div class="social-links">
+                    <a href="https://eran.sandler.co.il" target="_blank" rel="noopener" title="Website" class="social-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" fill="currentColor"/>
+                        </svg>
+                    </a>
+                    <a href="https://x.com/erans" target="_blank" rel="noopener" title="X (Twitter)" class="social-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor"/>
+                        </svg>
+                    </a>
+                    <a href="https://bsky.app/profile/esandler.bsky.social" target="_blank" rel="noopener" title="BlueSky" class="social-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8Z" fill="currentColor"/>
+                        </svg>
+                    </a>
+                    <a href="https://github.com/erans/selfhostllm" target="_blank" rel="noopener" title="GitHub" class="social-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" fill="currentColor"/>
+                        </svg>
+                    </a>
+                    <a href="https://linkedin.com/in/erans" target="_blank" rel="noopener" title="LinkedIn" class="social-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="currentColor"/>
+                        </svg>
+                    </a>
+                    <a href="../" class="back-link">← Back to GPU Calculator</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="selfhost-llm-mac.js"></script>
+</body>
+</html>
