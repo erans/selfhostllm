@@ -35,6 +35,62 @@ body {
     box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
 }
 
+/* GPU banner styles */
+.gpu-banner {
+    margin-bottom: 20px;
+    border: 1px solid #ffff00;
+    border-radius: 6px;
+    background: linear-gradient(135deg, rgba(255, 255, 0, 0.05) 0%, rgba(0, 255, 0, 0.05) 100%);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.gpu-banner:hover {
+    border-color: #39ff14;
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
+    transform: translateY(-1px);
+}
+
+.gpu-banner-link {
+    text-decoration: none;
+    display: block;
+    padding: 12px 20px;
+}
+
+.gpu-banner-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.gpu-icon {
+    font-size: 24px;
+    animation: pulse 2s infinite;
+}
+
+.gpu-text {
+    color: #ffff00;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+.gpu-banner:hover .gpu-text {
+    color: #39ff14;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
 .header {
     text-align: center;
     margin-bottom: 30px;
@@ -679,6 +735,28 @@ optgroup {
     .calculator-grid {
         grid-template-columns: 1fr;
         gap: 20px;
+    }
+    
+    /* GPU banner mobile styles */
+    .gpu-banner {
+        margin-bottom: 15px;
+    }
+    
+    .gpu-banner-link {
+        padding: 10px 15px;
+    }
+    
+    .gpu-banner-content {
+        flex-direction: row;
+        gap: 8px;
+    }
+    
+    .gpu-icon {
+        font-size: 20px;
+    }
+    
+    .gpu-text {
+        font-size: 12px;
     }
     
     body {

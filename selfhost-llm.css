@@ -35,6 +35,62 @@ body {
     box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
 }
 
+/* Mac banner styles */
+.mac-banner {
+    margin-bottom: 20px;
+    border: 1px solid #00ffff;
+    border-radius: 6px;
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.05) 0%, rgba(0, 255, 0, 0.05) 100%);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.mac-banner:hover {
+    border-color: #39ff14;
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
+    transform: translateY(-1px);
+}
+
+.mac-banner-link {
+    text-decoration: none;
+    display: block;
+    padding: 12px 20px;
+}
+
+.mac-banner-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.mac-icon {
+    font-size: 24px;
+    animation: pulse 2s infinite;
+}
+
+.mac-text {
+    color: #00ffff;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+.mac-banner:hover .mac-text {
+    color: #39ff14;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
 .header {
     text-align: center;
     margin-bottom: 30px;
@@ -543,6 +599,28 @@ option {
     .calculator-grid {
         grid-template-columns: 1fr;
         gap: 20px;
+    }
+    
+    /* Mac banner mobile styles */
+    .mac-banner {
+        margin-bottom: 15px;
+    }
+    
+    .mac-banner-link {
+        padding: 10px 15px;
+    }
+    
+    .mac-banner-content {
+        flex-direction: row;
+        gap: 8px;
+    }
+    
+    .mac-icon {
+        font-size: 20px;
+    }
+    
+    .mac-text {
+        font-size: 12px;
     }
     
     body {
