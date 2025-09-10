@@ -151,7 +151,9 @@ function checkCompatibility() {
     const contextLength = parseInt(document.getElementById('context-length').value) || 8192;
     
     const selectedOption = modelSelect.options[modelSelect.selectedIndex];
-    const baseMemory = parseFloat(selectedOption.getAttribute('data-memory')) || 14;
+    // For MoE models, use active memory if available, otherwise use total memory
+    const activeMemory = selectedOption.getAttribute('data-active-memory');
+    const baseMemory = activeMemory ? parseFloat(activeMemory) : (parseFloat(selectedOption.getAttribute('data-memory')) || 14);
     
     // Calculate memory requirements
     const modelMemory = baseMemory * quantization;

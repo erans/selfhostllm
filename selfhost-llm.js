@@ -275,7 +275,13 @@ function calculate() {
     if (modelInputType === 'preset') {
         const modelSelect = document.getElementById('model-preset');
         const selectedOption = modelSelect.options[modelSelect.selectedIndex];
-        modelMemory = parseFloat(selectedOption.getAttribute('data-memory')) || 14;
+        // For MoE models, use active memory if available, otherwise use total memory
+        const activeMemory = selectedOption.getAttribute('data-active-memory');
+        if (activeMemory) {
+            modelMemory = parseFloat(activeMemory);
+        } else {
+            modelMemory = parseFloat(selectedOption.getAttribute('data-memory')) || 14;
+        }
     } else if (modelInputType === 'parameters') {
         const paramCount = parseFloat(document.getElementById('model-parameters').value) || 7;
         modelMemory = paramCount * 2; // Rough estimate: 2GB per billion parameters in FP16

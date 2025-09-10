@@ -111,6 +111,19 @@
                 <li><strong>10+ requests:</strong> Production-ready for moderate traffic</li>
             </ul>
             
+            <h4>Mixture-of-Experts (MoE) Models:</h4>
+            <div class="step">
+                <strong>Special Handling for MoE Models</strong>
+                <p>MoE models (like Mixtral, DeepSeek V3/R1, Qwen3 MoE, Kimi K2, GLM-4.5) work differently:</p>
+                <ul>
+                    <li><strong>Total Parameters:</strong> The full model size (e.g., Mixtral 8x7B = 56B total parameters)</li>
+                    <li><strong>Active Parameters:</strong> Only a subset of experts are used per token (e.g., ~14B active)</li>
+                    <li><strong>Memory Calculation:</strong> We automatically use <em>active memory</em> for these models</li>
+                    <li><strong>Why this matters:</strong> You only need RAM for active experts, not the entire model</li>
+                </ul>
+                <p><strong>Example:</strong> Mixtral 8x7B shows "~94GB total, ~16GB active" - we calculate using 16GB</p>
+            </div>
+            
             <h4>Important Notes:</h4>
             <ul>
                 <li>This is a rough estimate - actual usage varies by model architecture</li>
@@ -119,6 +132,7 @@
                 <li>Different attention mechanisms (MHA, MQA, GQA) affect memory usage</li>
                 <li>Framework overhead and memory fragmentation can impact real-world performance</li>
                 <li>Dynamic batching and memory management can improve real-world throughput</li>
+                <li><strong>MoE models:</strong> Memory requirements can vary based on routing algorithms and expert utilization patterns</li>
             </ul>
         </div>
         
@@ -319,6 +333,18 @@
                             <option value="72" data-memory="144" data-quant="0.5">Qwen 72B (~144GB)</option>
                             <option value="110" data-memory="220" data-quant="0.5">Qwen 110B (~220GB)</option>
                         </optgroup>
+                        <optgroup label="Alibaba Qwen 3 (2025)">
+                            <option value="4" data-memory="8" data-quant="1.0">Qwen3 4B (~8GB)</option>
+                            <option value="8" data-memory="16" data-quant="1.0">Qwen3 8B (~16GB)</option>
+                            <option value="14" data-memory="28" data-quant="1.0">Qwen3 14B (~28GB)</option>
+                            <option value="32" data-memory="64" data-quant="1.0">Qwen3 32B (~64GB)</option>
+                            <option value="3" data-memory="60" data-active-memory="6" data-quant="1.0">Qwen3 30B-A3B MoE (~60GB total, ~6GB active)</option>
+                            <option value="22" data-memory="470" data-active-memory="44" data-quant="0.5">Qwen3 235B-A22B MoE (~470GB total, ~44GB active)</option>
+                        </optgroup>
+                        <optgroup label="Moonshot AI Kimi (2025)">
+                            <option value="32" data-memory="2000" data-active-memory="64" data-quant="0.5">Kimi K2 Base 1T (~2000GB total, ~64GB active)</option>
+                            <option value="32" data-memory="2000" data-active-memory="64" data-quant="0.5">Kimi K2 Instruct 1T (~2000GB total, ~64GB active)</option>
+                        </optgroup>
                         <optgroup label="Qwen Coder">
                             <option value="1.5" data-memory="3" data-quant="1.0">Qwen-Coder 1.5B (~3GB)</option>
                             <option value="7" data-memory="14" data-quant="1.0">Qwen-Coder 7B (~14GB)</option>
@@ -328,8 +354,13 @@
                             <option value="7" data-memory="14" data-quant="1.0">DeepSeek 7B (~14GB)</option>
                             <option value="16" data-memory="32" data-quant="1.0">DeepSeek 16B (~32GB)</option>
                             <option value="67" data-memory="134" data-quant="0.5">DeepSeek 67B (~134GB)</option>
-                            <option value="236" data-memory="472" data-quant="0.5">DeepSeek 236B (~472GB)</option>
-                            <option value="671" data-memory="720" data-quant="0.25">DeepSeek-R1 671B (~720GB)</option>
+                            <option value="37" data-memory="1342" data-active-memory="74" data-quant="0.5">DeepSeek V3 671B (~1342GB total, ~74GB active)</option>
+                            <option value="37" data-memory="1342" data-active-memory="74" data-quant="0.5">DeepSeek V3.1 671B (~1342GB total, ~74GB active)</option>
+                            <option value="21" data-memory="472" data-active-memory="42" data-quant="0.5">DeepSeek R1 236B (~472GB total, ~42GB active)</option>
+                            <option value="1.5" data-memory="3" data-quant="1.0">DeepSeek R1 1.5B Distilled (~3GB)</option>
+                            <option value="7" data-memory="14" data-quant="1.0">DeepSeek R1 7B Distilled (~14GB)</option>
+                            <option value="32" data-memory="64" data-quant="1.0">DeepSeek R1 32B Distilled (~64GB)</option>
+                            <option value="70" data-memory="140" data-quant="0.5">DeepSeek R1 70B Distilled (~140GB)</option>
                         </optgroup>
                         <optgroup label="Mistral">
                             <option value="7" data-memory="14" data-quant="1.0">Mistral 7B (~14GB)</option>
@@ -338,8 +369,13 @@
                             <option value="123" data-memory="246" data-quant="0.5">Mistral-Large 123B (~246GB)</option>
                         </optgroup>
                         <optgroup label="Mixtral">
-                            <option value="8" data-memory="16" data-quant="0.5">Mixtral 8x7B (~94GB total, ~16GB active)</option>
-                            <option value="8" data-memory="45" data-quant="0.5">Mixtral 8x22B (~282GB total, ~45GB active)</option>
+                            <option value="8" data-memory="94" data-active-memory="16" data-quant="0.5">Mixtral 8x7B (~94GB total, ~16GB active)</option>
+                            <option value="8" data-memory="282" data-active-memory="45" data-quant="0.5">Mixtral 8x22B (~282GB total, ~45GB active)</option>
+                        </optgroup>
+                        <optgroup label="Mistral Codestral">
+                            <option value="22" data-memory="44" data-quant="0.5">Codestral 22B (~44GB)</option>
+                            <option value="100" data-memory="200" data-quant="0.5">Codestral 25.01 (~200GB)</option>
+                            <option value="100" data-memory="200" data-quant="0.5">Codestral 25.08 (~200GB)</option>
                         </optgroup>
                         <optgroup label="OpenAI GPT">
                             <option value="20.9" data-memory="42" data-quant="0.3">GPT-OSS 20B (~42GB FP16, ~16GB MXFP4)</option>
@@ -348,10 +384,25 @@
                             <option value="2.7" data-memory="5.4" data-quant="1.0">GPT-Neo 2.7B (~5.4GB)</option>
                             <option value="20" data-memory="40" data-quant="0.5">GPT-NeoX 20B (~40GB)</option>
                         </optgroup>
-                        <optgroup label="Google">
+                        <optgroup label="Zhipu AI GLM">
+                            <option value="6.2" data-memory="12" data-quant="1.0">ChatGLM-6B (~12GB)</option>
+                            <option value="6.2" data-memory="12" data-quant="1.0">ChatGLM2-6B (~12GB)</option>
+                            <option value="9" data-memory="18" data-quant="1.0">GLM-4-9B (~18GB)</option>
+                            <option value="32" data-memory="64" data-quant="1.0">GLM-4-32B (~64GB)</option>
+                            <option value="12" data-memory="106" data-active-memory="24" data-quant="0.5">GLM-4.5-Air MoE (~106GB total, ~24GB active)</option>
+                            <option value="32" data-memory="355" data-active-memory="64" data-quant="0.5">GLM-4.5 MoE (~355GB total, ~64GB active)</option>
+                        </optgroup>
+                        <optgroup label="Google Gemma">
                             <option value="2" data-memory="4" data-quant="1.0">Gemma 2B (~4GB)</option>
                             <option value="7" data-memory="14" data-quant="1.0">Gemma 7B (~14GB)</option>
                             <option value="27" data-memory="54" data-quant="0.5">Gemma-2 27B (~54GB)</option>
+                        </optgroup>
+                        <optgroup label="Google Gemma 3 (2025)">
+                            <option value="0.27" data-memory="0.5" data-quant="1.0">Gemma 3 270M (~0.5GB)</option>
+                            <option value="1" data-memory="2" data-quant="1.0">Gemma 3 1B (~2GB)</option>
+                            <option value="4" data-memory="8" data-quant="1.0">Gemma 3 4B (~8GB)</option>
+                            <option value="12" data-memory="24" data-quant="1.0">Gemma 3 12B (~24GB)</option>
+                            <option value="27" data-memory="54" data-quant="0.5">Gemma 3 27B (~54GB)</option>
                         </optgroup>
                         <optgroup label="Microsoft">
                             <option value="3.8" data-memory="7.6" data-quant="1.0">Phi-3 Mini 3.8B (~7.6GB)</option>
