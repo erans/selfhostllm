@@ -268,18 +268,68 @@
                 <div class="form-group">
                     <label for="model-preset">Select Model:</label>
                     <select id="model-preset" onchange="updateModelSelection()">
-                        <optgroup label="Recommended for NPU (≤13B)">
-                            <option value="1" data-memory="2" data-quant="0.25">Qwen 2B (~2GB)</option>
+                        <optgroup label="Tiny Models (Best for NPU - ≤2B)">
+                            <option value="0.27" data-memory="0.5" data-quant="0.25">Gemma 3 270M (~0.5GB)</option>
+                            <option value="0.35" data-memory="0.7" data-quant="0.25">Granite 4.0 H 350M (~0.7GB)</option>
+                            <option value="1" data-memory="2" data-quant="0.25">Gemma 3 1B (~2GB)</option>
+                            <option value="1.5" data-memory="3" data-quant="0.25">Granite 4.0 H 1B (~3GB)</option>
+                            <option value="1.5" data-memory="3" data-quant="0.25">Qwen-Coder 1.5B (~3GB)</option>
+                            <option value="1.5" data-memory="3" data-quant="0.25">DeepSeek R1 1.5B Distilled (~3GB)</option>
+                            <option value="1.8" data-memory="3.6" data-quant="0.25">Qwen 2B (~3.6GB)</option>
+                            <option value="2" data-memory="4" data-quant="0.25">Gemma 2B (~4GB)</option>
+                        </optgroup>
+                        <optgroup label="Small Models (Excellent for NPU - 3B-7B)">
+                            <option value="2.7" data-memory="5.4" data-quant="0.25">GPT-Neo 2.7B (~5.4GB)</option>
+                            <option value="3" data-memory="6" data-quant="0.25">Granite 4.0 H-Micro 3B (~6GB)</option>
                             <option value="3.8" data-memory="7.6" data-quant="0.25">Phi-3 Mini 3.8B (~7.6GB)</option>
+                            <option value="4" data-memory="8" data-quant="0.25">Gemma 3 4B (~8GB)</option>
+                            <option value="4" data-memory="8" data-quant="0.25">Qwen3 4B (~8GB)</option>
+                            <option value="6" data-memory="12" data-quant="0.25">GPT-J 6B (~12GB)</option>
+                            <option value="6" data-memory="12" data-quant="0.25">Yi 6B (~12GB)</option>
+                            <option value="6.2" data-memory="12" data-quant="0.25">ChatGLM-6B (~12GB)</option>
+                            <option value="6.2" data-memory="12" data-quant="0.25">ChatGLM2-6B (~12GB)</option>
                             <option value="7" data-memory="14" data-quant="0.25" selected>Llama 3 8B (~14GB)</option>
+                            <option value="7" data-memory="14" data-quant="0.25">Qwen 7B (~14GB)</option>
+                            <option value="7" data-memory="14" data-quant="0.25">Qwen-Coder 7B (~14GB)</option>
+                            <option value="7" data-memory="14" data-quant="0.25">DeepSeek 7B (~14GB)</option>
+                            <option value="7" data-memory="14" data-quant="0.25">DeepSeek R1 7B Distilled (~14GB)</option>
                             <option value="7" data-memory="14" data-quant="0.25">Mistral 7B (~14GB)</option>
+                            <option value="7" data-memory="14" data-quant="0.25">Gemma 7B (~14GB)</option>
+                            <option value="7" data-memory="14" data-quant="0.25">Phi-3 Small 7B (~14GB)</option>
+                        </optgroup>
+                        <optgroup label="Medium Models (Good for High-End NPU - 8B-14B)">
+                            <option value="8" data-memory="16" data-quant="0.25">Qwen3 8B (~16GB)</option>
+                            <option value="9" data-memory="18" data-quant="0.25">GLM-4-9B (~18GB)</option>
+                            <option value="12" data-memory="24" data-quant="0.25">Mistral-Nemo 12B (~24GB)</option>
+                            <option value="12" data-memory="24" data-quant="0.25">Gemma 3 12B (~24GB)</option>
+                            <option value="14" data-memory="28" data-quant="0.25">Qwen 14B (~28GB)</option>
+                            <option value="14" data-memory="28" data-quant="0.25">Qwen3 14B (~28GB)</option>
                             <option value="14" data-memory="28" data-quant="0.25">Phi-3 Medium 14B (~28GB)</option>
                         </optgroup>
-                        <optgroup label="Acceptable for High-End NPU (13B-30B)">
+                        <optgroup label="Larger Models (May Be Slower on NPU - 16B-32B)">
+                            <option value="16" data-memory="32" data-quant="0.25">DeepSeek 16B (~32GB)</option>
+                            <option value="20" data-memory="40" data-quant="0.25">GPT-NeoX 20B (~40GB)</option>
+                            <option value="20.9" data-memory="42" data-quant="0.25">GPT-OSS 20B (~42GB)</option>
+                            <option value="22" data-memory="44" data-quant="0.25">Mistral-Small 22B (~44GB)</option>
+                            <option value="22" data-memory="44" data-quant="0.25">Codestral 22B (~44GB)</option>
+                            <option value="27" data-memory="54" data-quant="0.25">Gemma-2 27B (~54GB)</option>
+                            <option value="27" data-memory="54" data-quant="0.25">Gemma 3 27B (~54GB)</option>
                             <option value="32" data-memory="64" data-quant="0.25">Qwen 32B (~64GB)</option>
-                            <option value="70" data-memory="140" data-quant="0.25">Llama 3 70B (~140GB)</option>
+                            <option value="32" data-memory="64" data-quant="0.25">Qwen3 32B (~64GB)</option>
+                            <option value="32" data-memory="64" data-quant="0.25">Qwen-Coder 32B (~64GB)</option>
+                            <option value="32" data-memory="64" data-quant="0.25">DeepSeek R1 32B Distilled (~64GB)</option>
+                            <option value="32" data-memory="64" data-quant="0.25">GLM-4-32B (~64GB)</option>
                         </optgroup>
-                        <optgroup label="Consider iGPU Instead (30B+)">
+                        <optgroup label="MoE Models (Efficient Active Memory)">
+                            <option value="1" data-memory="14" data-active-memory="2" data-quant="0.25">Granite 4.0 H-Tiny 7B (~14GB total, ~2GB active)</option>
+                            <option value="3" data-memory="60" data-active-memory="6" data-quant="0.25">Qwen3 30B-A3B MoE (~60GB total, ~6GB active)</option>
+                            <option value="8" data-memory="94" data-active-memory="16" data-quant="0.25">Mixtral 8x7B (~94GB total, ~16GB active)</option>
+                            <option value="9" data-memory="64" data-active-memory="18" data-quant="0.25">Granite 4.0 H-Small 32B (~64GB total, ~18GB active)</option>
+                            <option value="12" data-memory="106" data-active-memory="24" data-quant="0.25">GLM-4.5-Air MoE (~106GB total, ~24GB active)</option>
+                            <option value="17" data-memory="109" data-active-memory="34" data-quant="0.25">Llama 4 Scout 109B (~109GB total, ~34GB active)</option>
+                        </optgroup>
+                        <optgroup label="Consider iGPU Instead (>70B)">
+                            <option value="70" data-memory="140" data-quant="0.25">Llama 3 70B (~140GB)</option>
                             <option value="405" data-memory="810" data-quant="0.125">Llama 3.1 405B (~810GB)</option>
                         </optgroup>
                     </select>
