@@ -37,10 +37,16 @@ function updateModelSelection() {
 // Get Mac chip bandwidth based on model
 function getMacBandwidth(macModel) {
     // Extract chip type from mac model ID
-    if (!macModel) return 120; // Default M4 bandwidth
-    
+    if (!macModel) return 154; // Default M5 bandwidth
+
     const modelLower = macModel.toLowerCase();
-    
+
+    // M5 series
+    if (modelLower.includes('m5-ultra')) return 1500;  // Estimated 2026
+    if (modelLower.includes('m5-max')) return 760;     // Estimated 2026
+    if (modelLower.includes('m5-pro')) return 380;     // Estimated 2026
+    if (modelLower.includes('m5')) return 154;         // Released Oct 2025
+
     // M4 series
     if (modelLower.includes('m4-max')) return 546;
     if (modelLower.includes('m4-pro')) return 273;
@@ -63,8 +69,8 @@ function getMacBandwidth(macModel) {
     if (modelLower.includes('m1-max')) return 400;
     if (modelLower.includes('m1-pro')) return 200;
     if (modelLower.includes('m1')) return 68;
-    
-    return 120; // Default
+
+    return 154; // Default to M5
 }
 
 // Calculate performance estimate
@@ -255,8 +261,8 @@ function checkCompatibility() {
         if (contextLength > 32768 && tokensPerSecNum < 30) {
             notes.push('• Reduce context length for faster generation');
         }
-        if (macModel && macModel.includes('m4-pro') && tokensPerSecNum < 30) {
-            notes.push('• This model may benefit from M4 Max for better performance');
+        if (macModel && (macModel.includes('m5-pro') || macModel.includes('m4-pro')) && tokensPerSecNum < 30) {
+            notes.push('• This model may benefit from M5 Max or higher for better performance');
         }
         if (tokensPerSecNum > 30) {
             notes.push('• Performance should be smooth for most use cases');

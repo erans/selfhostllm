@@ -8,7 +8,7 @@
     <!-- Primary Meta Tags -->
     <meta name="title" content="SelfHostLLM Mac - Check LLM Compatibility for Your Mac">
     <meta name="description" content="Check which LLMs can run on your Mac. Calculate memory requirements based on your Mac's RAM for Llama, Qwen, DeepSeek, Mistral and more.">
-    <meta name="keywords" content="LLM, Mac, macOS, Apple Silicon, M1, M2, M3, RAM calculator, self-hosted AI, Llama, Qwen, DeepSeek, Mistral, memory requirements">
+    <meta name="keywords" content="LLM, Mac, macOS, Apple Silicon, M1, M2, M3, M4, M5, RAM calculator, self-hosted AI, Llama, Qwen, DeepSeek, Mistral, memory requirements">
     <meta name="author" content="Eran Sandler">
     
     <!-- Open Graph / Facebook -->
@@ -73,7 +73,7 @@
             <div class="step">
                 <strong>1. Total RAM Available</strong>
                 <code>Total RAM = Your Mac's Unified Memory</code>
-                <p>Example: MacBook Pro M4 with 32GB RAM</p>
+                <p>Example: MacBook Pro M5 with 32GB RAM</p>
                 <p>Apple Silicon uses unified memory shared between CPU and GPU.</p>
             </div>
             
@@ -134,8 +134,8 @@
             <ul>
                 <li>Apple Silicon Macs use unified memory architecture (no separate VRAM)</li>
                 <li>Metal Performance Shaders provide GPU acceleration for inference</li>
-                <li>Memory bandwidth varies by chip: M4 (120GB/s), M4 Pro (273GB/s), M4 Max (546GB/s), M3 Ultra (819GB/s)</li>
-                <li>Larger models benefit from Pro/Max chips' higher bandwidth</li>
+                <li>Memory bandwidth varies by chip: M5 (154GB/s), M5 Pro (380GB/s), M5 Max (760GB/s), M5 Ultra (1500GB/s)</li>
+                <li>Larger models benefit from Pro/Max/Ultra chips' higher bandwidth</li>
                 <li>Tools like <a href="https://ollama.ai" target="_blank" rel="noopener" class="tool-link">Ollama</a>, <a href="https://lmstudio.ai" target="_blank" rel="noopener" class="tool-link">LM Studio</a>, and <a href="https://github.com/ggerganov/llama.cpp" target="_blank" rel="noopener" class="tool-link">llama.cpp</a> are optimized for Apple Silicon</li>
                 <li>Quantization (INT4/INT8) significantly reduces memory requirements</li>
                 <li><strong>MoE models:</strong> Especially well-suited for Apple Silicon due to unified memory and efficient expert routing</li>
@@ -161,11 +161,12 @@
             <div class="step">
                 <strong>1. Memory Bandwidth by Chip</strong>
                 <code>The maximum data transfer rate between memory and processors</code>
-                <p>• M4: 120 GB/s bandwidth</p>
-                <p>• M4 Pro: 273 GB/s bandwidth (2.3x faster)</p>
-                <p>• M4 Max: 546 GB/s bandwidth (4.5x faster)</p>
-                <p>• M2 Ultra: 800 GB/s bandwidth (6.7x faster)</p>
-                <p>• M3 Ultra: 819 GB/s bandwidth (6.8x faster)</p>
+                <p>• M5: 154 GB/s bandwidth</p>
+                <p>• M5 Pro: 380 GB/s bandwidth (2.5x faster)</p>
+                <p>• M5 Max: 760 GB/s bandwidth (4.9x faster)</p>
+                <p>• M5 Ultra: 1500 GB/s bandwidth (9.7x faster)</p>
+                <p>• M4 Max: 546 GB/s bandwidth</p>
+                <p>• M3 Ultra: 819 GB/s bandwidth</p>
             </div>
             
             <div class="step">
@@ -258,6 +259,16 @@
                     <select id="mac-model" onchange="updateMacSpecs();">
                         <option value="">Select your Mac...</option>
                         <optgroup label="MacBook Pro">
+                            <option value="mbp-m5-max-128" data-ram="128">MacBook Pro M5 Max (128GB) - Expected 2026</option>
+                            <option value="mbp-m5-max-64" data-ram="64">MacBook Pro M5 Max (64GB) - Expected 2026</option>
+                            <option value="mbp-m5-max-48" data-ram="48">MacBook Pro M5 Max (48GB) - Expected 2026</option>
+                            <option value="mbp-m5-max-36" data-ram="36">MacBook Pro M5 Max (36GB) - Expected 2026</option>
+                            <option value="mbp-m5-pro-64" data-ram="64">MacBook Pro M5 Pro (64GB) - Expected 2026</option>
+                            <option value="mbp-m5-pro-48" data-ram="48">MacBook Pro M5 Pro (48GB) - Expected 2026</option>
+                            <option value="mbp-m5-pro-24" data-ram="24">MacBook Pro M5 Pro (24GB) - Expected 2026</option>
+                            <option value="mbp-m5-32" data-ram="32">MacBook Pro M5 (32GB)</option>
+                            <option value="mbp-m5-24" data-ram="24">MacBook Pro M5 (24GB)</option>
+                            <option value="mbp-m5-16" data-ram="16">MacBook Pro M5 (16GB)</option>
                             <option value="mbp-m4-max-128" data-ram="128">MacBook Pro M4 Max (128GB)</option>
                             <option value="mbp-m4-max-64" data-ram="64">MacBook Pro M4 Max (64GB)</option>
                             <option value="mbp-m4-max-48" data-ram="48">MacBook Pro M4 Max (48GB)</option>
@@ -296,6 +307,9 @@
                             <option value="mbp-m1-8" data-ram="8">MacBook Pro M1 (8GB)</option>
                         </optgroup>
                         <optgroup label="MacBook Air">
+                            <option value="mba-m5-24" data-ram="24">MacBook Air M5 (24GB) - Expected 2026</option>
+                            <option value="mba-m5-16" data-ram="16">MacBook Air M5 (16GB) - Expected 2026</option>
+                            <option value="mba-m5-8" data-ram="8">MacBook Air M5 (8GB) - Expected 2026</option>
                             <option value="mba-m3-24" data-ram="24">MacBook Air M3 (24GB)</option>
                             <option value="mba-m3-16" data-ram="16">MacBook Air M3 (16GB)</option>
                             <option value="mba-m3-8" data-ram="8">MacBook Air M3 (8GB)</option>
@@ -306,6 +320,14 @@
                             <option value="mba-m1-8" data-ram="8">MacBook Air M1 (8GB)</option>
                         </optgroup>
                         <optgroup label="Mac Studio">
+                            <option value="studio-m5-ultra-512" data-ram="512">Mac Studio M5 Ultra (512GB) - Expected 2026</option>
+                            <option value="studio-m5-ultra-256" data-ram="256">Mac Studio M5 Ultra (256GB) - Expected 2026</option>
+                            <option value="studio-m5-ultra-192" data-ram="192">Mac Studio M5 Ultra (192GB) - Expected 2026</option>
+                            <option value="studio-m5-ultra-128" data-ram="128">Mac Studio M5 Ultra (128GB) - Expected 2026</option>
+                            <option value="studio-m5-max-128" data-ram="128">Mac Studio M5 Max (128GB) - Expected 2026</option>
+                            <option value="studio-m5-max-64" data-ram="64">Mac Studio M5 Max (64GB) - Expected 2026</option>
+                            <option value="studio-m5-max-48" data-ram="48">Mac Studio M5 Max (48GB) - Expected 2026</option>
+                            <option value="studio-m5-max-36" data-ram="36">Mac Studio M5 Max (36GB) - Expected 2026</option>
                             <option value="studio-m3-ultra-512" data-ram="512">Mac Studio M3 Ultra (512GB)</option>
                             <option value="studio-m3-ultra-256" data-ram="256">Mac Studio M3 Ultra (256GB)</option>
                             <option value="studio-m3-ultra-192" data-ram="192">Mac Studio M3 Ultra (192GB)</option>
@@ -327,6 +349,12 @@
                             <option value="studio-m1-max-32" data-ram="32">Mac Studio M1 Max (32GB)</option>
                         </optgroup>
                         <optgroup label="Mac mini">
+                            <option value="mini-m5-pro-64" data-ram="64">Mac mini M5 Pro (64GB) - Expected 2026</option>
+                            <option value="mini-m5-pro-48" data-ram="48">Mac mini M5 Pro (48GB) - Expected 2026</option>
+                            <option value="mini-m5-pro-24" data-ram="24">Mac mini M5 Pro (24GB) - Expected 2026</option>
+                            <option value="mini-m5-32" data-ram="32">Mac mini M5 (32GB) - Expected 2026</option>
+                            <option value="mini-m5-24" data-ram="24">Mac mini M5 (24GB) - Expected 2026</option>
+                            <option value="mini-m5-16" data-ram="16">Mac mini M5 (16GB) - Expected 2026</option>
                             <option value="mini-m4-pro-64" data-ram="64">Mac mini M4 Pro (64GB)</option>
                             <option value="mini-m4-pro-48" data-ram="48">Mac mini M4 Pro (48GB)</option>
                             <option value="mini-m4-pro-24" data-ram="24">Mac mini M4 Pro (24GB)</option>
@@ -342,6 +370,9 @@
                             <option value="mini-m1-8" data-ram="8">Mac mini M1 (8GB)</option>
                         </optgroup>
                         <optgroup label="iMac">
+                            <option value="imac-m5-32" data-ram="32">iMac M5 (32GB) - Expected 2026</option>
+                            <option value="imac-m5-24" data-ram="24">iMac M5 (24GB) - Expected 2026</option>
+                            <option value="imac-m5-16" data-ram="16">iMac M5 (16GB) - Expected 2026</option>
                             <option value="imac-m4-32" data-ram="32">iMac M4 (32GB)</option>
                             <option value="imac-m4-24" data-ram="24">iMac M4 (24GB)</option>
                             <option value="imac-m4-16" data-ram="16">iMac M4 (16GB)</option>
@@ -352,6 +383,10 @@
                             <option value="imac-m1-8" data-ram="8">iMac M1 (8GB)</option>
                         </optgroup>
                         <optgroup label="Mac Pro">
+                            <option value="macpro-m5-ultra-512" data-ram="512">Mac Pro M5 Ultra (512GB) - Expected 2026</option>
+                            <option value="macpro-m5-ultra-256" data-ram="256">Mac Pro M5 Ultra (256GB) - Expected 2026</option>
+                            <option value="macpro-m5-ultra-192" data-ram="192">Mac Pro M5 Ultra (192GB) - Expected 2026</option>
+                            <option value="macpro-m5-ultra-128" data-ram="128">Mac Pro M5 Ultra (128GB) - Expected 2026</option>
                             <option value="macpro-m2-ultra-192" data-ram="192">Mac Pro M2 Ultra (192GB)</option>
                             <option value="macpro-m2-ultra-128" data-ram="128">Mac Pro M2 Ultra (128GB)</option>
                             <option value="macpro-m2-ultra-64" data-ram="64">Mac Pro M2 Ultra (64GB)</option>
