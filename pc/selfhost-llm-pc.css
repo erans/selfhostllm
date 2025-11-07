@@ -1,0 +1,996 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Prevent horizontal scroll on mobile */
+html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+body {
+    background-color: #000;
+    color: #00ff00;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.4;
+    padding: 20px;
+    min-height: 100vh;
+    background-image: 
+        radial-gradient(rgba(0, 255, 0, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #00ff00;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+}
+
+/* GPU banner styles */
+.gpu-banner {
+    margin-bottom: 20px;
+    border: 1px solid #ffff00;
+    border-radius: 6px;
+    background: linear-gradient(135deg, rgba(255, 255, 0, 0.05) 0%, rgba(0, 255, 0, 0.05) 100%);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.gpu-banner:hover {
+    border-color: #39ff14;
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
+    transform: translateY(-1px);
+}
+
+.gpu-banner-link {
+    text-decoration: none;
+    display: block;
+    padding: 12px 20px;
+}
+
+.gpu-banner-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.gpu-icon {
+    font-size: 24px;
+    animation: pulse 2s infinite;
+}
+
+.gpu-text {
+    color: #ffff00;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+.gpu-banner:hover .gpu-text {
+    color: #39ff14;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #00ff00;
+    padding-bottom: 20px;
+}
+
+.ascii-art {
+    font-size: 10px;
+    line-height: 1;
+    color: #00ff00;
+    white-space: pre;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #ffff00;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.calculator-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.section {
+    border: 1px solid #00ff00;
+    border-radius: 4px;
+    padding: 15px;
+    background: rgba(0, 255, 0, 0.02);
+}
+
+.section-title {
+    color: #ffff00;
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    color: #00ffff;
+    margin-bottom: 5px;
+    font-size: 12px;
+}
+
+select, input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    background: #000;
+    border: 1px solid #00ff00;
+    color: #00ff00;
+    font-family: inherit;
+    font-size: 12px;
+    border-radius: 3px;
+}
+
+select:focus, input:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+option {
+    background: #000;
+    color: #00ff00;
+}
+
+optgroup {
+    background: #000;
+    color: #ffff00;
+    font-weight: bold;
+}
+
+.calculate-btn {
+    width: 100%;
+    padding: 12px;
+    background: #000;
+    border: 2px solid #00ff00;
+    color: #00ff00;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+.calculate-btn:hover {
+    background: #00ff00;
+    color: #000;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
+}
+
+.results {
+    margin-top: 30px;
+    border: 2px solid #ffff00;
+    border-radius: 4px;
+    padding: 20px;
+    background: rgba(255, 255, 0, 0.05);
+}
+
+.results-title {
+    color: #ffff00;
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 5px;
+    border-bottom: 1px dotted #00ff00;
+}
+
+.result-label {
+    color: #00ffff;
+}
+
+.result-value {
+    color: #ffff00;
+    font-weight: bold;
+}
+
+/* Compatibility status */
+.compatibility-status {
+    text-align: center;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.compatibility-status.compatible {
+    background: rgba(0, 255, 0, 0.1);
+    border: 2px solid #00ff00;
+    color: #00ff00;
+}
+
+.compatibility-status.incompatible {
+    background: rgba(255, 0, 0, 0.1);
+    border: 2px solid #ff0000;
+    color: #ff6666;
+}
+
+.compatibility-status.warning {
+    background: rgba(255, 255, 0, 0.1);
+    border: 2px solid #ffff00;
+    color: #ffff00;
+}
+
+.compatibility-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.recommendations {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid #00ffff;
+    border-radius: 4px;
+}
+
+.recommendations h4 {
+    color: #00ffff;
+    margin-bottom: 10px;
+}
+
+.recommendations ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.recommendations li {
+    color: #00ff00;
+    padding: 5px 0;
+    padding-left: 20px;
+    position: relative;
+}
+
+.recommendations li:before {
+    content: "›";
+    position: absolute;
+    left: 0;
+    color: #ffff00;
+}
+
+/* Utility classes */
+.hidden {
+    display: none !important;
+}
+
+.help-text {
+    display: block;
+    color: #888;
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+.share-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #39ff14;
+    color: #000;
+    border: none;
+    padding: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(57, 255, 20, 0.3);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.share-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 20px rgba(57, 255, 20, 0.5);
+}
+
+.share-dialog {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #0a0a0a;
+    border: 2px solid #39ff14;
+    border-radius: 8px;
+    padding: 25px;
+    z-index: 2000;
+    max-width: 600px;
+    width: 90%;
+    box-shadow: 0 0 30px rgba(57, 255, 20, 0.5);
+}
+
+.share-dialog.active {
+    display: block;
+}
+
+.share-dialog h3 {
+    color: #39ff14;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.share-dialog p {
+    color: #888;
+    margin-bottom: 15px;
+}
+
+.share-url-container {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 15px;
+    word-break: break-all;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #39ff14;
+}
+
+.share-dialog-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.share-dialog button {
+    padding: 8px 16px;
+    border: 1px solid #39ff14;
+    background: transparent;
+    color: #39ff14;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.share-dialog button:hover {
+    background: #39ff14;
+    color: #000;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1500;
+}
+
+.overlay.active {
+    display: block;
+}
+
+.info-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid #00ffff;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.info-title {
+    color: #00ffff;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Footer styles */
+.footer {
+    margin-top: 40px;
+    padding: 20px 0;
+    border-top: 1px solid #00ff00;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.copyright {
+    color: #00ffff;
+    font-size: 12px;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.social-link {
+    color: #00ff00;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.social-link:hover {
+    color: #39ff14;
+    transform: translateY(-2px);
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    color: #00ff00;
+    text-decoration: none;
+    border: 1px solid #00ff00;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    transition: all 0.3s ease;
+}
+
+.back-link:hover {
+    background: #00ff00;
+    color: #000;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+/* Tool links styling */
+.tool-link {
+    color: #00ff00;
+    text-decoration: underline;
+}
+
+.tool-link:hover {
+    color: #39ff14;
+    text-shadow: 0 0 5px rgba(57, 255, 20, 0.3);
+}
+
+/* How calculated link */
+.how-calculated-link {
+    display: block;
+    font-size: 12px;
+    color: #00ffff;
+    text-decoration: none;
+    margin-top: 8px;
+    font-weight: normal;
+    transition: color 0.3s ease;
+}
+
+.how-calculated-link:hover {
+    color: #39ff14;
+    text-decoration: underline;
+}
+
+/* Explanation dialog */
+.explanation-dialog {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #0a0a0a;
+    border: 2px solid #39ff14;
+    border-radius: 8px;
+    padding: 25px;
+    z-index: 2000;
+    max-width: 700px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 0 30px rgba(57, 255, 20, 0.5);
+}
+
+.explanation-dialog.active {
+    display: block;
+}
+
+.explanation-dialog h3 {
+    color: #39ff14;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 20px;
+    border-bottom: 1px solid #39ff14;
+    padding-bottom: 10px;
+}
+
+.explanation-dialog h4 {
+    color: #00ffff;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.explanation-content {
+    color: #00ff00;
+    line-height: 1.6;
+}
+
+.formula-box {
+    background: #1a1a1a;
+    border: 1px solid #00ff00;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.formula-box code {
+    color: #39ff14;
+    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.step {
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(0, 255, 0, 0.02);
+    border-left: 3px solid #00ff00;
+    border-radius: 4px;
+}
+
+.step strong {
+    color: #ffff00;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.step code {
+    display: block;
+    color: #39ff14;
+    background: #1a1a1a;
+    padding: 8px;
+    margin: 8px 0;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.step p {
+    color: #888;
+    margin: 5px 0;
+    font-size: 12px;
+}
+
+.explanation-dialog ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.explanation-dialog li {
+    color: #00ff00;
+    margin: 8px 0;
+    font-size: 13px;
+}
+
+.explanation-dialog li strong {
+    color: #ffff00;
+}
+
+/* Performance section styles */
+.performance-section {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(0, 100, 255, 0.05);
+    border: 1px solid #00ffff;
+    border-radius: 4px;
+}
+
+.performance-title {
+    color: #00ffff;
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.performance-result {
+    margin: 15px 0;
+}
+
+.performance-metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    margin: 8px 0;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.metric-label {
+    color: #00ffff;
+    font-size: 13px;
+}
+
+.metric-value {
+    color: #ffff00;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Performance rating colors */
+.metric-value.excellent {
+    color: #00ff00;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+.metric-value.good {
+    color: #39ff14;
+}
+
+.metric-value.moderate {
+    color: #ffff00;
+}
+
+.metric-value.slow {
+    color: #ffa500;
+}
+
+.metric-value.very-slow {
+    color: #ff6666;
+    text-shadow: 0 0 5px rgba(255, 102, 102, 0.5);
+}
+
+.performance-notes {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-left: 3px solid #00ffff;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #00ff00;
+}
+
+.performance-notes h4 {
+    color: #00ffff;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+/* Performance explanation dialog styles */
+.performance-explanation-dialog {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #0a0a0a;
+    border: 2px solid #00ffff;
+    border-radius: 8px;
+    padding: 25px;
+    z-index: 2000;
+    max-width: 750px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+}
+
+.performance-explanation-dialog.active {
+    display: block;
+}
+
+.performance-explanation-dialog h3 {
+    color: #00ffff;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 20px;
+    border-bottom: 1px solid #00ffff;
+    padding-bottom: 10px;
+}
+
+.performance-explanation-dialog h4 {
+    color: #39ff14;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.performance-explanation-dialog .step {
+    background: rgba(0, 255, 255, 0.02);
+    border-left: 3px solid #00ffff;
+}
+
+.performance-explanation-dialog ul li {
+    margin: 10px 0;
+}
+
+/* Mobile and Tablet Styles */
+@media (max-width: 768px) {
+    .calculator-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    /* GPU banner mobile styles */
+    .gpu-banner {
+        margin-bottom: 15px;
+    }
+    
+    .gpu-banner-link {
+        padding: 10px 15px;
+    }
+    
+    .gpu-banner-content {
+        flex-direction: row;
+        gap: 8px;
+    }
+    
+    .gpu-icon {
+        font-size: 20px;
+    }
+    
+    .gpu-text {
+        font-size: 12px;
+    }
+    
+    body {
+        padding: 10px;
+        font-size: 12px;
+    }
+    
+    .container {
+        padding: 15px;
+        border-width: 1px;
+    }
+    
+    .header {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+    }
+    
+    .ascii-art {
+        font-size: 7px;
+        overflow-x: auto;
+        max-width: 100%;
+        line-height: 0.9;
+    }
+    
+    .subtitle {
+        font-size: 14px;
+    }
+    
+    .section {
+        padding: 12px;
+    }
+    
+    .section-title {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+    
+    .form-group {
+        margin-bottom: 12px;
+    }
+    
+    select, input[type="number"] {
+        padding: 10px;
+        font-size: 14px;
+        min-height: 44px;
+    }
+    
+    .calculate-btn {
+        padding: 14px;
+        font-size: 14px;
+        min-height: 48px;
+    }
+    
+    .results {
+        padding: 15px;
+        margin-top: 20px;
+    }
+    
+    .results-title {
+        font-size: 16px;
+    }
+    
+    .result-item {
+        flex-direction: column;
+        padding: 8px 5px;
+    }
+    
+    .result-label {
+        margin-bottom: 5px;
+    }
+    
+    .compatibility-status {
+        font-size: 16px;
+        padding: 15px;
+    }
+    
+    .compatibility-icon {
+        font-size: 24px;
+    }
+    
+    .share-button {
+        width: 44px;
+        height: 44px;
+        bottom: 20px;
+        right: 20px;
+        top: auto;
+        font-size: 18px;
+    }
+    
+    .share-dialog {
+        width: 95%;
+        padding: 20px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .share-dialog h3 {
+        font-size: 18px;
+    }
+    
+    .share-url-container {
+        font-size: 11px;
+        padding: 8px;
+    }
+    
+    .info-box {
+        padding: 12px;
+        font-size: 11px;
+        margin-top: 15px;
+    }
+    
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .copyright {
+        order: 2;
+        margin-top: 10px;
+    }
+    
+    .social-links {
+        order: 1;
+        justify-content: center;
+    }
+    
+    /* Explanation dialog mobile */
+    .explanation-dialog {
+        width: 95%;
+        padding: 15px;
+        max-height: 90vh;
+    }
+    
+    .explanation-dialog h3 {
+        font-size: 16px;
+    }
+    
+    .step {
+        padding: 10px;
+        margin: 15px 0;
+    }
+    
+    .step code {
+        font-size: 11px;
+        padding: 5px;
+    }
+    
+    /* Performance section mobile */
+    .performance-section {
+        padding: 15px;
+        margin-top: 15px;
+    }
+    
+    .performance-title {
+        font-size: 14px;
+    }
+    
+    .performance-metric {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+    }
+    
+    .metric-label {
+        margin-bottom: 5px;
+    }
+    
+    .performance-explanation-dialog {
+        width: 95%;
+        padding: 15px;
+        max-height: 90vh;
+    }
+    
+    .performance-explanation-dialog h3 {
+        font-size: 16px;
+    }
+}
+
+/* Extra small devices (phones in portrait) */
+@media (max-width: 480px) {
+    body {
+        padding: 5px;
+    }
+    
+    .container {
+        padding: 10px;
+        border-radius: 4px;
+    }
+    
+    .ascii-art {
+        font-size: 5px;
+        line-height: 0.8;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        max-width: 100%;
+    }
+    
+    .subtitle {
+        font-size: 13px;
+    }
+    
+    label {
+        font-size: 11px;
+    }
+    
+    small, .help-text {
+        font-size: 10px;
+    }
+    
+    .share-dialog-buttons {
+        flex-direction: column;
+    }
+    
+    .share-dialog button {
+        width: 100%;
+        padding: 10px;
+    }
+}
+
+/* Ensure touch-friendly tap targets */
+@media (hover: none) and (pointer: coarse) {
+    select, input[type="number"], button, .share-button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}

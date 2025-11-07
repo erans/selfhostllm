@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SelfHostLLM PC - Check LLM Compatibility for Your PC with NPU</title>
+    
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="SelfHostLLM PC - Check LLM Compatibility for Your PC with NPU">
+    <meta name="description" content="Check which LLMs can run on your PC with NPU. Calculate memory requirements for AMD Ryzen AI and Intel Core Ultra processors.">
+    <meta name="keywords" content="LLM, PC, NPU, AMD Ryzen AI, Intel Core Ultra, RAM calculator, self-hosted AI, Llama, Qwen, DeepSeek, Mistral, TOPS, NPU inference">
+    <meta name="author" content="Eran Sandler">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://selfhostllm.org/pc">
+    <meta property="og:title" content="SelfHostLLM PC - Check LLM Compatibility for Your PC with NPU">
+    <meta property="og:description" content="Check which LLMs can run on your PC with NPU based on available RAM.">
+    <meta property="og:image" content="https://selfhostllm.org/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="SelfHostLLM PC">
+    
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://selfhostllm.org/pc">
+    <meta name="twitter:title" content="SelfHostLLM PC - Check LLM Compatibility for Your PC with NPU">
+    <meta name="twitter:description" content="Check which LLMs can run on your PC with NPU based on available RAM.">
+    <meta name="twitter:image" content="https://selfhostllm.org/og-image.png">
+    <meta name="twitter:creator" content="@erans">
+    
+    <!-- Additional Meta Tags -->
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="theme-color" content="#00ff00">
+    <link rel="canonical" href="https://selfhostllm.org/pc">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <link rel="stylesheet" href="/pc/selfhost-llm-pc.css">
+</head>
+<body>
+    <button class="share-button" onclick="showShareDialog()" title="Share Configuration">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="currentColor"/>
+        </svg>
+    </button>
+    
+    <div class="overlay" id="overlay" onclick="closeShareDialog()"></div>
+    
+    <div class="share-dialog" id="shareDialog">
+        <h3>📤 Share Configuration</h3>
+        <p>Share this link with others to load the same configuration:</p>
+        <div class="share-url-container" id="shareUrl"></div>
+        <div class="share-dialog-buttons">
+            <button onclick="copyShareLink()">📋 Copy Link</button>
+            <button onclick="closeShareDialog()">✖ Close</button>
+        </div>
+    </div>
+    
+    <div class="explanation-dialog" id="explanationDialog">
+        <h3>📊 How PC NPU LLM Compatibility is Calculated</h3>
+        
+        <div class="explanation-content">
+            <h4>The Formula:</h4>
+            <div class="formula-box">
+                <code>Can Run = (Available RAM ≥ Model Memory + KV Cache) && (NPU TOPS ≥ Minimum)</code>
+            </div>
+            
+            <h4>Step-by-Step Breakdown:</h4>
+            
+            <div class="step">
+                <strong>1. Total RAM Available</strong>
+                <code>Total RAM = Your PC's System Memory</code>
+                <p>Example: Ryzen AI Max+ 395 with 64GB RAM</p>
+                <p>NPU-enabled PCs can use system RAM for LLM inference.</p>
+            </div>
+            
+            <div class="step">
+                <strong>2. Available RAM for LLM</strong>
+                <code>Available RAM = Total RAM - System Overhead</code>
+                <p>Example: 64GB - 6GB = 58GB available</p>
+                <p>Reserve memory for Windows/Linux and other applications.</p>
+            </div>
+            
+            <div class="step">
+                <strong>3. Model Memory (Adjusted for Quantization)</strong>
+                <code>Model Memory = Base Model Size × Quantization Factor</code>
+                <p>Example: 14GB (7B model) × 0.25 (INT4) = 3.5GB</p>
+                <p>NPUs work best with INT4/INT8 quantization.</p>
+            </div>
+            
+            <div class="step">
+                <strong>4. KV Cache for Context</strong>
+                <code>KV Cache = Context Length × Memory per Token</code>
+                <p>Example: 8192 tokens × 0.00014GB = 1.15GB</p>
+                <p>Memory needed for the attention mechanism during inference.</p>
+            </div>
+            
+            <div class="step">
+                <strong>5. NPU Performance Check</strong>
+                <code>NPU TOPS ≥ 40 for Copilot+ / 50+ Recommended</code>
+                <p>Example: Ryzen AI Max (50 TOPS) → Good for 7B-13B models</p>
+                <p>Higher TOPS = faster inference and larger model support.</p>
+            </div>
+            
+            <h4>PC-Specific Considerations:</h4>
+            <ul>
+                <li>NPUs are optimized for power-efficient inference (~20 tokens/sec)</li>
+                <li>Memory bandwidth varies by RAM type: LPDDR5X (soldered) offers higher bandwidth but no upgrade path</li>
+                <li>Memory type affects performance: LPDDR5X (256 GB/s on Strix Halo) vs DDR5 (89.6 GB/s dual-channel)</li>
+                <li>Larger models benefit from higher memory bandwidth</li>
+                <li>Tools like <a href="https://github.com/intel/intel-npu-acceleration-library" target="_blank" rel="noopener" class="tool-link">Intel NPU Acceleration Library</a> and <a href="https://github.com/microsoft/onnxruntime" target="_blank" rel="noopener" class="tool-link">ONNX Runtime</a> support NPU inference</li>
+                <li>Quantization (INT4/INT8) is essential for NPU performance</li>
+                <li><strong>NPU vs iGPU:</strong> NPUs offer better power efficiency, iGPUs offer better raw performance</li>
+            </ul>
+        </div>
+        
+        <div class="share-dialog-buttons">
+            <button onclick="closeExplanationDialog()">✖ Close</button>
+        </div>
+    </div>
+    
+    <div class="performance-explanation-dialog" id="performanceExplanationDialog">
+        <h3>⚡ Understanding NPU Inference Performance</h3>
+        
+        <div class="explanation-content">
+            <h4>Performance Calculation:</h4>
+            <div class="formula-box">
+                <code>Tokens/Second ≈ (NPU TOPS × Efficiency) / (Model Size × Quantization Overhead)</code>
+            </div>
+            
+            <h4>Key Factors Affecting Performance:</h4>
+            
+            <div class="step">
+                <strong>1. NPU TOPS (AI Performance)</strong>
+                <code>The computational power of the Neural Processing Unit</code>
+                <p>• AMD Ryzen AI Max: 50 TOPS</p>
+                <p>• AMD Ryzen AI 300: 50-55 TOPS</p>
+                <p>• Intel Core Ultra 200V: 48 TOPS</p>
+                <p>• Intel Core Ultra 200H: 13 TOPS</p>
+            </div>
+            
+            <div class="step">
+                <strong>2. Memory Bandwidth</strong>
+                <code>How fast data can be transferred to/from RAM</code>
+                <p>• AMD Strix Halo (LPDDR5X-6400, 4ch): 256 GB/s</p>
+                <p>• Standard LPDDR5X-7500 (2ch): ~120 GB/s</p>
+                <p>• DDR5-5600 (2ch): ~89.6 GB/s</p>
+                <p>Higher bandwidth = better performance for large models</p>
+            </div>
+            
+            <div class="step">
+                <strong>3. Quantization Impact on NPU</strong>
+                <code>Lower precision = faster inference on NPU</code>
+                <p><strong>INT4 (Recommended for NPU):</strong></p>
+                <p>• 4× memory reduction (75% less)</p>
+                <p>• 2-4× faster inference</p>
+                <p>• Best balance for NPU</p>
+                
+                <p><strong>INT8:</strong></p>
+                <p>• 2× memory reduction (50% less)</p>
+                <p>• 1.5-2× faster inference</p>
+                <p>• Good accuracy</p>
+                
+                <p><strong>FP16:</strong></p>
+                <p>• Full memory (0% reduction)</p>
+                <p>• Not recommended for NPU</p>
+                <p>• Use iGPU or discrete GPU instead</p>
+            </div>
+            
+            <div class="step">
+                <strong>4. Model Size Efficiency</strong>
+                <code>Smaller models achieve better NPU utilization</code>
+                <p>• ≤7B models: Best for NPU (20-25 tok/s)</p>
+                <p>• 7B-13B models: Good for high-end NPU (15-20 tok/s)</p>
+                <p>• 13B-30B models: May bottleneck on NPU (10-15 tok/s)</p>
+                <p>• 30B+ models: Consider iGPU instead</p>
+            </div>
+            
+            <div class="step">
+                <strong>5. Power Efficiency</strong>
+                <code>NPU offers significant power advantages</code>
+                <p>• NPU power: ~35W typical</p>
+                <p>• iGPU power: ~75W typical</p>
+                <p>• NPU uses ~50% less power than iGPU</p>
+                <p>• Ideal for battery-powered laptops</p>
+            </div>
+        </div>
+        
+        <div class="share-dialog-buttons">
+            <button onclick="closePerformanceExplanation()">✖ Close</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="gpu-banner">
+            <a href="/" class="gpu-banner-link">
+                <div class="gpu-banner-content">
+                    <span class="gpu-icon">🖥️</span>
+                    <span class="gpu-text">Looking to run this on a GPU locally or Hosted? Click here →</span>
+                </div>
+            </a>
+        </div>
+        
+        <div class="header">
+            <div class="ascii-art" id="ascii-art"></div>
+            <div class="subtitle">Check Which LLMs Can Run on Your PC with NPU</div>
+        </div>
+        
+        <div class="calculator-grid">
+            <div class="section">
+                <div class="section-title">› PC Configuration</div>
+                
+                <div class="form-group">
+                    <label for="pc-config">PC Configuration (Optional):</label>
+                    <select id="pc-config" onchange="updatePCSpecs();">
+                        <option value="">Select your PC configuration...</option>
+                        <optgroup label="AMD Ryzen AI Max (Strix Halo)">
+                            <option value="amd-max-395-128" data-ram="128" data-npu="50" data-bandwidth="256" data-ramtype="LPDDR5X-6400">Ryzen AI Max+ 395 (16C, 50 TOPS, 128GB LPDDR5X)</option>
+                            <option value="amd-max-395-96" data-ram="96" data-npu="50" data-bandwidth="256" data-ramtype="LPDDR5X-6400">Ryzen AI Max+ 395 (16C, 50 TOPS, 96GB LPDDR5X)</option>
+                            <option value="amd-max-390-96" data-ram="96" data-npu="50" data-bandwidth="256" data-ramtype="LPDDR5X-6400">Ryzen AI Max 390 (12C, 50 TOPS, 96GB LPDDR5X)</option>
+                            <option value="amd-max-390-64" data-ram="64" data-npu="50" data-bandwidth="256" data-ramtype="LPDDR5X-6400">Ryzen AI Max 390 (12C, 50 TOPS, 64GB LPDDR5X)</option>
+                        </optgroup>
+                        <optgroup label="AMD Ryzen AI 300 (Strix Point)">
+                            <option value="amd-ai9-hx375-64" data-ram="64" data-npu="50" data-bandwidth="100" data-ramtype="DDR5-5600">Ryzen AI 9 HX 375 (12C, 50 TOPS, 64GB DDR5)</option>
+                            <option value="amd-ai9-hx375-32" data-ram="32" data-npu="50" data-bandwidth="100" data-ramtype="DDR5-5600">Ryzen AI 9 HX 375 (12C, 50 TOPS, 32GB DDR5)</option>
+                            <option value="amd-ai9-365-64" data-ram="64" data-npu="50" data-bandwidth="100" data-ramtype="LPDDR5X-7500">Ryzen AI 9 365 (10C, 50 TOPS, 64GB LPDDR5X)</option>
+                            <option value="amd-ai9-365-32" data-ram="32" data-npu="50" data-bandwidth="100" data-ramtype="LPDDR5X-7500">Ryzen AI 9 365 (10C, 50 TOPS, 32GB LPDDR5X)</option>
+                            <option value="amd-ai7-360-32" data-ram="32" data-npu="50" data-bandwidth="100" data-ramtype="LPDDR5X-7500">Ryzen AI 7 360 (8C, 50 TOPS, 32GB LPDDR5X)</option>
+                        </optgroup>
+                        <optgroup label="Intel Core Ultra 200V (Lunar Lake)">
+                            <option value="intel-ultra-268v-64" data-ram="64" data-npu="48" data-bandwidth="137" data-ramtype="LPDDR5X-8533">Core Ultra 7 268V (8C, 48 TOPS, 64GB LPDDR5X)</option>
+                            <option value="intel-ultra-268v-32" data-ram="32" data-npu="48" data-bandwidth="137" data-ramtype="LPDDR5X-8533">Core Ultra 7 268V (8C, 48 TOPS, 32GB LPDDR5X)</option>
+                            <option value="intel-ultra-258v-32" data-ram="32" data-npu="48" data-bandwidth="120" data-ramtype="LPDDR5X-7467">Core Ultra 7 258V (8C, 48 TOPS, 32GB LPDDR5X)</option>
+                            <option value="intel-ultra-228v-32" data-ram="32" data-npu="48" data-bandwidth="137" data-ramtype="LPDDR5X-8533">Core Ultra 5 228V (8C, 48 TOPS, 32GB LPDDR5X)</option>
+                        </optgroup>
+                        <optgroup label="Intel Core Ultra 200H (Arrow Lake Mobile)">
+                            <option value="intel-ultra-288h-64" data-ram="64" data-npu="13" data-bandwidth="100" data-ramtype="DDR5-5600">Core Ultra 9 288H (16C, 13 TOPS, 64GB DDR5)</option>
+                            <option value="intel-ultra-288h-32" data-ram="32" data-npu="13" data-bandwidth="100" data-ramtype="DDR5-5600">Core Ultra 9 288H (16C, 13 TOPS, 32GB DDR5)</option>
+                            <option value="intel-ultra-268h-32" data-ram="32" data-npu="13" data-bandwidth="100" data-ramtype="DDR5-5600">Core Ultra 7 268H (14C, 13 TOPS, 32GB DDR5)</option>
+                        </optgroup>
+                        <optgroup label="Intel Core Ultra Series 1 (Meteor Lake)">
+                            <option value="intel-ultra-185h-64" data-ram="64" data-npu="13" data-bandwidth="100" data-ramtype="DDR5-5600">Core Ultra 7 185H (16C, 13 TOPS, 64GB DDR5)</option>
+                            <option value="intel-ultra-185h-32" data-ram="32" data-npu="13" data-bandwidth="100" data-ramtype="DDR5-5600">Core Ultra 7 185H (16C, 13 TOPS, 32GB DDR5)</option>
+                            <option value="intel-ultra-155h-32" data-ram="32" data-npu="10" data-bandwidth="100" data-ramtype="DDR5-5600">Core Ultra 5 155H (12C, 10 TOPS, 32GB DDR5)</option>
+                        </optgroup>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="total-ram">Total System RAM (GB):</label>
+                    <input type="number" id="total-ram" min="8" max="192" value="32" step="8" oninput="checkCompatibility();">
+                    <small class="help-text">Total RAM installed in your system</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="system-overhead">System Overhead (GB):</label>
+                    <input type="number" id="system-overhead" min="4" max="16" value="6" step="1" oninput="checkCompatibility();">
+                    <small class="help-text">Memory reserved for OS and other apps</small>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">› Model Selection</div>
+                
+                <div class="form-group">
+                    <label for="model-preset">Select Model:</label>
+                    <select id="model-preset" onchange="updateModelSelection()">
+                        <optgroup label="Recommended for NPU (≤13B)">
+                            <option value="1" data-memory="2" data-quant="0.25">Qwen 2B (~2GB)</option>
+                            <option value="3.8" data-memory="7.6" data-quant="0.25">Phi-3 Mini 3.8B (~7.6GB)</option>
+                            <option value="7" data-memory="14" data-quant="0.25" selected>Llama 3 8B (~14GB)</option>
+                            <option value="7" data-memory="14" data-quant="0.25">Mistral 7B (~14GB)</option>
+                            <option value="14" data-memory="28" data-quant="0.25">Phi-3 Medium 14B (~28GB)</option>
+                        </optgroup>
+                        <optgroup label="Acceptable for High-End NPU (13B-30B)">
+                            <option value="32" data-memory="64" data-quant="0.25">Qwen 32B (~64GB)</option>
+                            <option value="70" data-memory="140" data-quant="0.25">Llama 3 70B (~140GB)</option>
+                        </optgroup>
+                        <optgroup label="Consider iGPU Instead (30B+)">
+                            <option value="405" data-memory="810" data-quant="0.125">Llama 3.1 405B (~810GB)</option>
+                        </optgroup>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="quantization">Quantization:</label>
+                    <select id="quantization" onchange="checkCompatibility();">
+                        <option value="0.25" selected>INT4 - Best for NPU (75% smaller)</option>
+                        <option value="0.5">INT8 - Good for NPU (50% smaller)</option>
+                        <option value="0.75">FP8 - Minimal compression (25% smaller)</option>
+                        <option value="1.0">FP16 - No compression (not recommended for NPU)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="context-length">Context Length:</label>
+                    <select id="context-length" onchange="checkCompatibility();">
+                        <option value="1024">1K tokens</option>
+                        <option value="2048">2K tokens</option>
+                        <option value="4096">4K tokens</option>
+                        <option value="8192" selected>8K tokens</option>
+                        <option value="16384">16K tokens</option>
+                        <option value="32768">32K tokens</option>
+                        <option value="65536">64K tokens</option>
+                        <option value="131072">128K tokens</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <button class="calculate-btn" onclick="checkCompatibility()">» CHECK COMPATIBILITY «</button>
+        
+        <div id="results" class="results hidden">
+            <div class="results-title">
+                ═══ COMPATIBILITY CHECK ═══
+                <a href="#" class="how-calculated-link" onclick="showHowCalculated(event)">How is this calculated?</a>
+            </div>
+            
+            <div class="compatibility-status" id="compatibility-status">
+                <!-- Status will be inserted here -->
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">Total RAM:</span>
+                <span class="result-value" id="total-ram-display">-</span>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">NPU TOPS:</span>
+                <span class="result-value" id="npu-tops-display">-</span>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">Memory Bandwidth:</span>
+                <span class="result-value" id="memory-bandwidth">-</span>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">Available for LLM:</span>
+                <span class="result-value" id="available-ram">-</span>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">Model Memory Required:</span>
+                <span class="result-value" id="model-memory">-</span>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">KV Cache Required:</span>
+                <span class="result-value" id="kv-cache-memory">-</span>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">Total Memory Needed:</span>
+                <span class="result-value" id="total-memory-needed">-</span>
+            </div>
+            
+            <div class="result-item">
+                <span class="result-label">Memory Margin:</span>
+                <span class="result-value" id="memory-margin">-</span>
+            </div>
+            
+            <div class="performance-section" id="performance-section">
+                <div class="performance-title">
+                    ═══ NPU PERFORMANCE ESTIMATE ═══
+                    <a href="#" class="how-calculated-link" onclick="showPerformanceExplanation(event)">How is performance estimated?</a>
+                </div>
+                
+                <div class="performance-result">
+                    <div class="performance-metric">
+                        <span class="metric-label">Estimated Speed:</span>
+                        <span class="metric-value" id="tokens-per-second">-</span>
+                    </div>
+                    
+                    <div class="performance-metric">
+                        <span class="metric-label">Generation Time (100 tokens):</span>
+                        <span class="metric-value" id="generation-time">-</span>
+                    </div>
+                    
+                    <div class="performance-metric">
+                        <span class="metric-label">Performance Rating:</span>
+                        <span class="metric-value" id="performance-rating">-</span>
+                    </div>
+                </div>
+                
+                <div id="performance-notes" class="performance-notes"></div>
+            </div>
+            
+            <div id="recommendations" class="recommendations"></div>
+        </div>
+        
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="copyright">
+                    Copyright © 2025 Eran Sandler
+                </div>
+                <div class="social-links">
+                    <a href="https://eran.sandler.co.il" target="_blank" rel="noopener" title="Website" class="social-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" fill="currentColor"/>
+                        </svg>
+                    </a>
+                    <a href="https://x.com/erans" target="_blank" rel="noopener" title="X (Twitter)" class="social-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor"/>
+                        </svg>
+                    </a>
+                    <a href="https://bsky.app/profile/esandler.bsky.social" target="_blank" rel="noopener" title="BlueSky" class="social-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8Z" fill="currentColor"/>
+                        </svg>
+                    </a>
+                    <a href="https://github.com/erans/selfhostllm" target="_blank" rel="noopener" title="GitHub" class="social-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" fill="currentColor"/>
+                        </svg>
+                    </a>
+                    <a href="https://linkedin.com/in/erans" target="_blank" rel="noopener" title="LinkedIn" class="social-link">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="currentColor"/>
+                        </svg>
+                    </a>
+                    <a href="../" class="back-link">← Back to GPU Calculator</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="/pc/selfhost-llm-pc.js"></script>
+</body>
+</html>
