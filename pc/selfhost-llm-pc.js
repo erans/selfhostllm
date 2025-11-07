@@ -373,11 +373,9 @@ function updateURL() {
     const params = new URLSearchParams();
     params.set('ram', document.getElementById('total-ram').value);
     params.set('overhead', document.getElementById('system-overhead').value);
-    params.set('model', document.getElementById('model-memory').value);
+    params.set('model', document.getElementById('model-preset').value);
     params.set('quant', document.getElementById('quantization').value);
     params.set('context', document.getElementById('context-length').value);
-    params.set('npu', document.getElementById('npu-tops').value);
-    params.set('ramtype', document.getElementById('ram-type').value);
 
     const pcConfig = document.getElementById('pc-config').value;
     if (pcConfig) params.set('config', pcConfig);
@@ -391,11 +389,9 @@ function loadFromURL() {
 
     if (params.has('ram')) document.getElementById('total-ram').value = params.get('ram');
     if (params.has('overhead')) document.getElementById('system-overhead').value = params.get('overhead');
-    if (params.has('model')) document.getElementById('model-memory').value = params.get('model');
+    if (params.has('model')) document.getElementById('model-preset').value = params.get('model');
     if (params.has('quant')) document.getElementById('quantization').value = params.get('quant');
     if (params.has('context')) document.getElementById('context-length').value = params.get('context');
-    if (params.has('npu')) document.getElementById('npu-tops').value = params.get('npu');
-    if (params.has('ramtype')) document.getElementById('ram-type').value = params.get('ramtype');
     if (params.has('config')) document.getElementById('pc-config').value = params.get('config');
 
     if (params.size > 0) {
