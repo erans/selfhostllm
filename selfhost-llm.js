@@ -121,6 +121,8 @@ function getGPUBandwidth(gpuModel) {
         'a100': 1600,  // 40GB variant
         'a100-80': 2000,  // 80GB variant
         'h100': 3000,
+        'h200': 4800,
+        'b200': 8000,
         'v100': 900,
         'rtx6000': 960,  // RTX 6000 Ada
         'l40s': 864,
