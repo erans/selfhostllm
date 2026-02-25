@@ -193,7 +193,7 @@ label {
     margin-top: 5px;
 }
 
-select, input[type="number"] {
+select, input[type="number"], input[type="text"] {
     width: 100%;
     padding: 8px;
     background: #000;
@@ -207,6 +207,75 @@ select, input[type="number"] {
 select:focus, input:focus {
     outline: none;
     box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+.searchable-native-select {
+    display: none !important;
+}
+
+.integrated-select {
+    position: relative;
+}
+
+.integrated-select::after {
+    content: '▾';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ffff00;
+    pointer-events: none;
+}
+
+.integrated-select-input {
+    padding-right: 28px !important;
+}
+
+.integrated-select-menu {
+    display: none;
+    position: absolute;
+    z-index: 50;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    max-height: 280px;
+    overflow-y: auto;
+    background: #000;
+    border: 1px solid #00ff00;
+    border-radius: 3px;
+    box-shadow: 0 0 12px rgba(0, 255, 0, 0.25);
+}
+
+.integrated-select-menu.active {
+    display: block;
+}
+
+.integrated-select-group {
+    padding: 6px 8px;
+    color: #ffff00;
+    font-weight: bold;
+    border-bottom: 1px dotted rgba(255, 255, 0, 0.35);
+}
+
+.integrated-select-option {
+    padding: 7px 8px;
+    color: #00ff00;
+    cursor: pointer;
+}
+
+.integrated-select-option:hover,
+.integrated-select-option.active {
+    background: rgba(0, 255, 0, 0.16);
+}
+
+.integrated-select-option.disabled {
+    color: #666;
+    cursor: not-allowed;
+}
+
+.integrated-select-empty {
+    padding: 8px;
+    color: #888;
 }
 
 option {
@@ -801,7 +870,7 @@ option {
         min-width: fit-content;
     }
     
-    select, input[type="number"] {
+    select, input[type="number"], input[type="text"] {
         padding: 10px;
         font-size: 14px;
         /* Better touch targets */
@@ -999,7 +1068,7 @@ option {
 
 /* Ensure touch-friendly tap targets */
 @media (hover: none) and (pointer: coarse) {
-    select, input[type="number"], button, .share-button {
+    select, input[type="number"], input[type="text"], button, .share-button {
         min-height: 44px;
         min-width: 44px;
     }

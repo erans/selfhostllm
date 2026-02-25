@@ -402,5 +402,18 @@ function loadFromURL() {
 // Initialize on page load
 window.addEventListener('DOMContentLoaded', () => {
     displayAsciiArt();
+
+    if (window.setupSearchableSelects) {
+        window.setupSearchableSelects([
+            { id: 'pc-config', placeholder: 'Select PC configuration...' },
+            { id: 'model-preset', placeholder: 'Select model...' }
+        ]);
+    }
+
     loadFromURL();
+
+    if (window.refreshSearchableSelect) {
+        window.refreshSearchableSelect('pc-config');
+        window.refreshSearchableSelect('model-preset');
+    }
 });

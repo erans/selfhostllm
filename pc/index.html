@@ -217,6 +217,9 @@
                     <label for="pc-config">PC Configuration (Optional):</label>
                     <select id="pc-config" onchange="updatePCSpecs();">
                         <option value="">Select your PC configuration...</option>
+                        <optgroup label="NVIDIA DGX Spark (GB10)">
+                            <option value="nvidia-dgx-spark-gb10-128" data-ram="128" data-npu="1000" data-bandwidth="273" data-ramtype="LPDDR5X Unified">DGX Spark GB10 (20C CPU, 1000 AI TOPS, 128GB LPDDR5X Unified)</option>
+                        </optgroup>
                         <optgroup label="AMD Ryzen AI Max (Strix Halo)">
                             <option value="amd-max-395-128" data-ram="128" data-npu="50" data-bandwidth="256" data-ramtype="LPDDR5X-6400">Ryzen AI Max+ 395 (16C, 50 TOPS, 128GB LPDDR5X)</option>
                             <option value="amd-max-395-96" data-ram="96" data-npu="50" data-bandwidth="256" data-ramtype="LPDDR5X-6400">Ryzen AI Max+ 395 (16C, 50 TOPS, 96GB LPDDR5X)</option>
@@ -285,6 +288,7 @@
                             <option value="3" data-memory="6" data-quant="0.25">Ministral 3B (~6GB)</option>
                             <option value="3.8" data-memory="7.6" data-quant="0.25">Phi-3 Mini 3.8B (~7.6GB)</option>
                             <option value="4" data-memory="8" data-quant="0.25">Gemma 3 4B (~8GB)</option>
+                            <option value="4" data-memory="8" data-quant="0.25">Llama-3.1-Nemotron-Nano-4B-v1.1 (~8GB)</option>
                             <option value="4" data-memory="8" data-quant="0.25">Qwen3 4B (~8GB)</option>
                             <option value="6" data-memory="12" data-quant="0.25">GPT-J 6B (~12GB)</option>
                             <option value="6" data-memory="12" data-quant="0.25">Yi 6B (~12GB)</option>
@@ -304,6 +308,8 @@
                         <optgroup label="Medium Models (Good for High-End NPU - 8B-14B)">
                             <option value="8" data-memory="16" data-quant="0.25">Qwen3 8B (~16GB)</option>
                             <option value="8" data-memory="16" data-quant="0.25">Ministral 8B (~16GB)</option>
+                            <option value="8" data-memory="16" data-quant="0.25">Llama-3.1-Nemotron-Nano-8B-v1 (~16GB)</option>
+                            <option value="8" data-memory="16" data-quant="0.25">Nemotron-Orchestrator-8B (R&D) (~16GB)</option>
                             <option value="9" data-memory="18" data-quant="0.25">GLM-4-9B (~18GB)</option>
                             <option value="9" data-memory="18" data-quant="0.25">GLM-4.6V-Flash 9B (~18GB)</option>
                             <option value="12" data-memory="24" data-quant="0.25">Mistral-Nemo 12B (~24GB)</option>
@@ -323,6 +329,7 @@
                             <option value="24" data-memory="48" data-quant="0.25">Devstral Small 2 24B (~48GB)</option>
                             <option value="27" data-memory="54" data-quant="0.25">Gemma-2 27B (~54GB)</option>
                             <option value="27" data-memory="54" data-quant="0.25">Gemma 3 27B (~54GB)</option>
+                            <option value="27" data-memory="54" data-quant="0.25">Qwen3.5 27B (~54GB)</option>
                             <option value="32" data-memory="64" data-quant="0.25">Qwen 32B (~64GB)</option>
                             <option value="32" data-memory="64" data-quant="0.25">Qwen3 32B (~64GB)</option>
                             <option value="32" data-memory="64" data-quant="0.25">Qwen-Coder 32B (~64GB)</option>
@@ -334,16 +341,28 @@
                         <optgroup label="MoE Models (Efficient Active Memory)">
                             <option value="1" data-memory="14" data-active-memory="2" data-quant="0.25">Granite 4.0 H-Tiny 7B (~14GB total, ~2GB active)</option>
                             <option value="3" data-memory="60" data-active-memory="6" data-quant="0.25">Qwen3 30B-A3B MoE (~60GB total, ~6GB active)</option>
+                            <option value="3" data-memory="70" data-active-memory="6" data-quant="0.25">Qwen3.5 35B-A3B MoE (~70GB total, ~6GB active)</option>
+                            <option value="10" data-memory="244" data-active-memory="20" data-quant="0.25">Qwen3.5 122B-A10B MoE (~244GB total, ~20GB active)</option>
+                            <option value="3.5" data-memory="60" data-active-memory="7" data-quant="0.25">NVIDIA-Nemotron-3-Nano-30B-A3B (~60GB total, ~7GB active)</option>
+                            <option value="3" data-memory="60" data-active-memory="6" data-quant="0.25">GLM-4.7-Flash 30B-A3B MoE (~60GB total, ~6GB active)</option>
                             <option value="8" data-memory="94" data-active-memory="16" data-quant="0.25">Mixtral 8x7B (~94GB total, ~16GB active)</option>
                             <option value="9" data-memory="64" data-active-memory="18" data-quant="0.25">Granite 4.0 H-Small 32B (~64GB total, ~18GB active)</option>
                             <option value="10" data-memory="460" data-active-memory="20" data-quant="0.25">MiniMax-M2 230B (~460GB total, ~20GB active)</option>
+                            <option value="10" data-memory="460" data-active-memory="20" data-quant="0.25">MiniMax-M2.1 230B (~460GB total, ~20GB active)</option>
+                            <option value="10" data-memory="458" data-active-memory="20" data-quant="0.25">MiniMax-M2.5 229B (~458GB total, ~20GB active)</option>
                             <option value="12" data-memory="106" data-active-memory="24" data-quant="0.25">GLM-4.5-Air MoE (~106GB total, ~24GB active)</option>
                             <option value="12" data-memory="212" data-active-memory="24" data-quant="0.25">GLM-4.6V 106B (~212GB total, ~24GB active)</option>
                             <option value="17" data-memory="109" data-active-memory="34" data-quant="0.25">Llama 4 Scout 109B (~109GB total, ~34GB active)</option>
                         </optgroup>
-                        <optgroup label="Consider iGPU Instead (>70B)">
+                        <optgroup label="Consider iGPU Instead (>40B)">
+                            <option value="49" data-memory="98" data-quant="0.25">Llama-3.3-Nemotron-Super-49B-v1 (~98GB)</option>
                             <option value="70" data-memory="140" data-quant="0.25">Llama 3 70B (~140GB)</option>
+                            <option value="17" data-memory="794" data-active-memory="34" data-quant="0.25">Qwen3.5 397B-A17B MoE (~794GB total, ~34GB active)</option>
+                            <option value="32" data-memory="710" data-active-memory="64" data-quant="0.25">GLM-4.7 355B-A32B MoE (~710GB total, ~64GB active)</option>
+                            <option value="46" data-memory="912" data-active-memory="92" data-quant="0.25">MiniMax-M1-80k 456B (~912GB total, ~92GB active)</option>
+                            <option value="253" data-memory="506" data-quant="0.125">Llama-3.1-Nemotron-Ultra-253B-v1 (~506GB)</option>
                             <option value="405" data-memory="810" data-quant="0.125">Llama 3.1 405B (~810GB)</option>
+                            <option value="32" data-memory="2000" data-active-memory="64" data-quant="0.125">Kimi K2.5 1T (~2000GB total, ~64GB active)</option>
                         </optgroup>
                     </select>
                 </div>
@@ -458,7 +477,7 @@
         <footer class="footer">
             <div class="footer-content">
                 <div class="copyright">
-                    Copyright © 2025 Eran Sandler
+                    Copyright © 2026 Eran Sandler
                 </div>
                 <div class="social-links">
                     <a href="https://eran.sandler.co.il" target="_blank" rel="noopener" title="Website" class="social-link">
@@ -492,6 +511,7 @@
         </footer>
     </div>
     
+    <script src="../searchable-select.js"></script>
     <script src="/pc/selfhost-llm-pc.js"></script>
 </body>
 </html>

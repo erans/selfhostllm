@@ -123,6 +123,11 @@ function getGPUBandwidth(gpuModel) {
         'h100': 3000,
         'v100': 900,
         'rtx6000': 960,  // RTX 6000 Ada
+        'rtxpro6000bw-ws': 1792,  // RTX PRO 6000 Blackwell Workstation
+        'rtxpro6000bw-maxq': 1792,  // RTX PRO 6000 Blackwell Max-Q
+        'rtxpro6000bw-server': 1597,  // RTX PRO 6000 Blackwell Server
+        'rtxpro5000bw-48': 1344,  // RTX PRO 5000 Blackwell 48GB
+        'rtxpro5000bw-72': 1344,  // RTX PRO 5000 72GB Blackwell
         'l40s': 864,
         'l40': 864,
         'l4': 300,
@@ -534,6 +539,13 @@ document.addEventListener('keydown', (e) => {
 // Initialize on page load
 window.onload = function() {
     displayAsciiArt();
+
+    if (window.setupSearchableSelects) {
+        window.setupSearchableSelects([
+            { id: 'gpu-type', placeholder: 'Select GPU model...' },
+            { id: 'model-preset', placeholder: 'Select model...' }
+        ]);
+    }
     
     // First check if we have URL parameters
     if (window.location.search) {
@@ -544,5 +556,10 @@ window.onload = function() {
         updateContextInputMethod();
         updateGPUSpecs();
         calculate();
+    }
+
+    if (window.refreshSearchableSelect) {
+        window.refreshSearchableSelect('gpu-type');
+        window.refreshSearchableSelect('model-preset');
     }
 };
