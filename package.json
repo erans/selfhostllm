@@ -4,6 +4,7 @@
   "description": "GPU Memory Calculator for Self-Hosted LLM Inference",
   "main": "index.html",
   "scripts": {
+    "test": "node tests/gpu-catalog.test.js",
     "dev": "wrangler dev --port 8080 --local",
     "deploy": "wrangler deploy",
     "deploy:staging": "wrangler deploy --env staging",

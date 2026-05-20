@@ -103,6 +103,16 @@ function getGPUBandwidth(gpuModel) {
     if (!gpuModel) return 0;
     
     const bandwidthMap = {
+        // RTX 50 Series
+        'rtx5090': 1792,
+        'rtx5080': 960,
+        'rtx5070ti': 896,
+        'rtx5070': 672,
+        'rtx5060ti': 448,
+        'rtx5060ti8': 448,
+        'rtx5060': 448,
+        'rtx5050': 320,
+        
         // RTX 40 Series
         'rtx4090': 1008,
         'rtx4080': 736,
@@ -130,6 +140,10 @@ function getGPUBandwidth(gpuModel) {
         'rtxpro6000bw-server': 1597,  // RTX PRO 6000 Blackwell Server
         'rtxpro5000bw-48': 1344,  // RTX PRO 5000 Blackwell 48GB
         'rtxpro5000bw-72': 1344,  // RTX PRO 5000 72GB Blackwell
+        'rtxpro4500bw': 896,  // RTX PRO 4500 Blackwell Workstation
+        'rtxpro4000bw': 672,  // RTX PRO 4000 Blackwell
+        'rtxpro4000bw-sff': 432,  // RTX PRO 4000 Blackwell SFF
+        'rtxpro2000bw': 288,  // RTX PRO 2000 Blackwell
         'l40s': 864,
         'l40': 864,
         'l4': 300,

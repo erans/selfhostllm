@@ -260,6 +260,16 @@
                     <label for="gpu-type">GPU Model:</label>
                     <select id="gpu-type" onchange="updateGPUSpecs();">
                         <option value="">Select GPU...</option>
+                        <optgroup label="NVIDIA RTX 50 Series">
+                            <option value="rtx5090" data-vram="32">RTX 5090 (32GB VRAM)</option>
+                            <option value="rtx5080" data-vram="16">RTX 5080 (16GB VRAM)</option>
+                            <option value="rtx5070ti" data-vram="16">RTX 5070 Ti (16GB VRAM)</option>
+                            <option value="rtx5070" data-vram="12">RTX 5070 (12GB VRAM)</option>
+                            <option value="rtx5060ti" data-vram="16">RTX 5060 Ti 16GB (16GB VRAM)</option>
+                            <option value="rtx5060ti8" data-vram="8">RTX 5060 Ti 8GB (8GB VRAM)</option>
+                            <option value="rtx5060" data-vram="8">RTX 5060 (8GB VRAM)</option>
+                            <option value="rtx5050" data-vram="8">RTX 5050 (8GB VRAM)</option>
+                        </optgroup>
                         <optgroup label="NVIDIA RTX 40 Series">
                             <option value="rtx4090" data-vram="24">RTX 4090 (24GB VRAM)</option>
                             <option value="rtx4080" data-vram="16">RTX 4080 (16GB VRAM)</option>
@@ -282,11 +292,15 @@
                             <option value="b200" data-vram="192">B200 (192GB HBM3e)</option>
                             <option value="v100" data-vram="32">V100 32GB (32GB VRAM)</option>
                             <option value="rtx6000" data-vram="48">RTX 6000 Ada (48GB VRAM)</option>
-                            <option value="rtxpro6000bw-ws" data-vram="96">RTX 6000 Pro Blackwell Workstation (96GB VRAM)</option>
-                            <option value="rtxpro6000bw-maxq" data-vram="96">RTX 6000 Pro Blackwell Max-Q (96GB VRAM)</option>
-                            <option value="rtxpro6000bw-server" data-vram="96">RTX 6000 Pro Blackwell Server (96GB VRAM)</option>
-                            <option value="rtxpro5000bw-48" data-vram="48">RTX 5000 Pro Blackwell (48GB VRAM)</option>
-                            <option value="rtxpro5000bw-72" data-vram="72">RTX 5000 Pro 72GB Blackwell (72GB VRAM)</option>
+                            <option value="rtxpro6000bw-ws" data-vram="96">RTX PRO 6000 Blackwell Workstation (96GB VRAM)</option>
+                            <option value="rtxpro6000bw-maxq" data-vram="96">RTX PRO 6000 Blackwell Max-Q Workstation (96GB VRAM)</option>
+                            <option value="rtxpro6000bw-server" data-vram="96">RTX PRO 6000 Blackwell Server (96GB VRAM)</option>
+                            <option value="rtxpro5000bw-48" data-vram="48">RTX PRO 5000 Blackwell (48GB VRAM)</option>
+                            <option value="rtxpro5000bw-72" data-vram="72">RTX PRO 5000 Blackwell 72GB (72GB VRAM)</option>
+                            <option value="rtxpro4500bw" data-vram="32">RTX PRO 4500 Blackwell Workstation (32GB VRAM)</option>
+                            <option value="rtxpro4000bw" data-vram="24">RTX PRO 4000 Blackwell (24GB VRAM)</option>
+                            <option value="rtxpro4000bw-sff" data-vram="24">RTX PRO 4000 Blackwell SFF (24GB VRAM)</option>
+                            <option value="rtxpro2000bw" data-vram="16">RTX PRO 2000 Blackwell (16GB VRAM)</option>
                         </optgroup>
                         <optgroup label="AMD Radeon">
                             <option value="rx7900xtx" data-vram="24">RX 7900 XTX (24GB VRAM)</option>
