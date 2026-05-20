@@ -90,11 +90,12 @@ The calculator automatically detects and handles MoE models differently:
 
 The calculator includes memory profiles for 100+ models from all major providers:
 
-### Latest 2025 Models
-- **Moonshot AI Kimi**: K2 Base/Instruct (1T params, 32B active)
-- **Alibaba Qwen 3**: 270M to 235B including MoE variants
-- **DeepSeek V3/R1**: Latest reasoning models with distilled versions
-- **Zhipu AI GLM**: ChatGLM to GLM-4.5 including MoE models
+### Latest Models
+- **Moonshot AI Kimi**: K2 through K2.6 plus Kimi Linear 48B-A3B variants
+- **Alibaba Qwen 3**: Dense, MoE, 2507, Coder, and Next variants up to 480B total parameters
+- **DeepSeek V4/V3/R1**: V4 Pro/Flash, V3.2, V3.1 Terminus, R1-0528, and distilled versions
+- **Z.ai GLM**: ChatGLM through GLM-5.1 including GLM-4.5/4.6/4.7/5 MoE models
+- **IBM Granite**: Granite 4.0 hybrid/dense and Granite 4.1 long-context models
 - **Google Gemma 3**: 270M to 27B with multimodal capabilities
 - **Mistral Codestral**: Latest code-specialized models
 

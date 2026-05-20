@@ -401,12 +401,18 @@
                             <option value="110" data-memory="220" data-quant="0.5">Qwen 110B (~220GB)</option>
                         </optgroup>
                         <optgroup label="Alibaba Qwen 3 (2025)">
+                            <option value="0.6" data-memory="1.2" data-quant="1.0">Qwen3 0.6B (~1.2GB)</option>
+                            <option value="1.7" data-memory="3.4" data-quant="1.0">Qwen3 1.7B (~3.4GB)</option>
                             <option value="4" data-memory="8" data-quant="1.0">Qwen3 4B (~8GB)</option>
                             <option value="8" data-memory="16" data-quant="1.0">Qwen3 8B (~16GB)</option>
                             <option value="14" data-memory="28" data-quant="1.0">Qwen3 14B (~28GB)</option>
                             <option value="32" data-memory="64" data-quant="1.0">Qwen3 32B (~64GB)</option>
                             <option value="3" data-memory="60" data-active-memory="6" data-quant="1.0">Qwen3 30B-A3B MoE (~60GB total, ~6GB active)</option>
                             <option value="22" data-memory="470" data-active-memory="44" data-quant="0.5">Qwen3 235B-A22B MoE (~470GB total, ~44GB active)</option>
+                            <option value="3.3" data-memory="61" data-active-memory="6.6" data-quant="1.0">Qwen3 30B-A3B Instruct 2507 (~61GB total, ~6.6GB active)</option>
+                            <option value="3.3" data-memory="61" data-active-memory="6.6" data-quant="1.0">Qwen3 30B-A3B Thinking 2507 (~61GB total, ~6.6GB active)</option>
+                            <option value="22" data-memory="470" data-active-memory="44" data-quant="0.5">Qwen3 235B-A22B Instruct 2507 (~470GB total, ~44GB active)</option>
+                            <option value="22" data-memory="470" data-active-memory="44" data-quant="0.5">Qwen3 235B-A22B Thinking 2507 (~470GB total, ~44GB active)</option>
                         </optgroup>
                         <optgroup label="Alibaba Qwen 3.5 (2026)">
                             <option value="27" data-memory="54" data-quant="1.0">Qwen3.5 27B (~54GB)</option>
@@ -420,6 +426,9 @@
                             <option value="32" data-memory="2000" data-active-memory="64" data-quant="0.5">Kimi K2 Thinking 1T (~2000GB total, ~64GB active)</option>
                             <option value="32" data-memory="2000" data-active-memory="64" data-quant="0.5">Kimi K2-Instruct-0905 1T (~2000GB total, ~64GB active)</option>
                             <option value="32" data-memory="2000" data-active-memory="64" data-quant="0.5">Kimi K2.5 1T (~2000GB total, ~64GB active)</option>
+                            <option value="32" data-memory="2000" data-active-memory="64" data-quant="0.5">Kimi K2.6 1T (~2000GB total, ~64GB active)</option>
+                            <option value="3" data-memory="96" data-active-memory="6" data-quant="1.0">Kimi Linear 48B-A3B Base (~96GB total, ~6GB active)</option>
+                            <option value="3" data-memory="96" data-active-memory="6" data-quant="1.0">Kimi Linear 48B-A3B Instruct (~96GB total, ~6GB active)</option>
                         </optgroup>
                         <optgroup label="MiniMax (2025-2026)">
                             <option value="46" data-memory="912" data-active-memory="92" data-quant="0.5">MiniMax-M1-80k 456B (~912GB total, ~92GB active)</option>
@@ -439,6 +448,12 @@
                             <option value="1.5" data-memory="3" data-quant="1.0">Qwen-Coder 1.5B (~3GB)</option>
                             <option value="7" data-memory="14" data-quant="1.0">Qwen-Coder 7B (~14GB)</option>
                             <option value="32" data-memory="64" data-quant="0.5">Qwen-Coder 32B (~64GB)</option>
+                            <option value="3.3" data-memory="61" data-active-memory="6.6" data-quant="1.0">Qwen3-Coder 30B-A3B Instruct (~61GB total, ~6.6GB active)</option>
+                            <option value="35" data-memory="960" data-active-memory="70" data-quant="0.5">Qwen3-Coder 480B-A35B Instruct (~960GB total, ~70GB active)</option>
+                        </optgroup>
+                        <optgroup label="Qwen 3 Next">
+                            <option value="3" data-memory="160" data-active-memory="6" data-quant="1.0">Qwen3-Next 80B-A3B Instruct (~160GB total, ~6GB active)</option>
+                            <option value="3" data-memory="160" data-active-memory="6" data-quant="1.0">Qwen3-Next 80B-A3B Thinking (~160GB total, ~6GB active)</option>
                         </optgroup>
                         <optgroup label="DeepSeek">
                             <option value="7" data-memory="14" data-quant="1.0">DeepSeek 7B (~14GB)</option>
@@ -446,9 +461,17 @@
                             <option value="67" data-memory="134" data-quant="0.5">DeepSeek 67B (~134GB)</option>
                             <option value="37" data-memory="1342" data-active-memory="74" data-quant="0.5">DeepSeek V3 671B (~1342GB total, ~74GB active)</option>
                             <option value="37" data-memory="1342" data-active-memory="74" data-quant="0.5">DeepSeek V3.1 671B (~1342GB total, ~74GB active)</option>
+                            <option value="37" data-memory="1342" data-active-memory="74" data-quant="0.5">DeepSeek V3.1 Terminus 671B (~1342GB total, ~74GB active)</option>
+                            <option value="37" data-memory="1342" data-active-memory="74" data-quant="0.5">DeepSeek V3.2-Exp 671B (~1342GB total, ~74GB active)</option>
                             <option value="37" data-memory="1370" data-active-memory="74" data-quant="0.5">DeepSeek V3.2 685B (~1370GB total, ~74GB active)</option>
                             <option value="37" data-memory="1370" data-active-memory="74" data-quant="0.5">DeepSeek V3.2-Speciale 685B (~1370GB total, ~74GB active)</option>
-                            <option value="21" data-memory="472" data-active-memory="42" data-quant="0.5">DeepSeek R1 236B (~472GB total, ~42GB active)</option>
+                            <option value="13" data-memory="568" data-active-memory="26" data-quant="0.5">DeepSeek V4 Flash Base 284B (~568GB total, ~26GB active)</option>
+                            <option value="13" data-memory="568" data-active-memory="26" data-quant="0.5">DeepSeek V4 Flash 284B (~568GB total, ~26GB active)</option>
+                            <option value="49" data-memory="3200" data-active-memory="98" data-quant="0.5">DeepSeek V4 Pro Base 1.6T (~3200GB total, ~98GB active)</option>
+                            <option value="49" data-memory="3200" data-active-memory="98" data-quant="0.5">DeepSeek V4 Pro 1.6T (~3200GB total, ~98GB active)</option>
+                            <option value="37" data-memory="1342" data-active-memory="74" data-quant="0.5">DeepSeek R1 671B (~1342GB total, ~74GB active)</option>
+                            <option value="37" data-memory="1342" data-active-memory="74" data-quant="0.5">DeepSeek R1-0528 671B (~1342GB total, ~74GB active)</option>
+                            <option value="8" data-memory="16" data-quant="1.0">DeepSeek R1-0528-Qwen3-8B (~16GB)</option>
                             <option value="1.5" data-memory="3" data-quant="1.0">DeepSeek R1 1.5B Distilled (~3GB)</option>
                             <option value="7" data-memory="14" data-quant="1.0">DeepSeek R1 7B Distilled (~14GB)</option>
                             <option value="32" data-memory="64" data-quant="1.0">DeepSeek R1 32B Distilled (~64GB)</option>
@@ -491,8 +514,8 @@
                             <option value="6.2" data-memory="12" data-quant="1.0">ChatGLM2-6B (~12GB)</option>
                             <option value="9" data-memory="18" data-quant="1.0">GLM-4-9B (~18GB)</option>
                             <option value="32" data-memory="64" data-quant="1.0">GLM-4-32B (~64GB)</option>
-                            <option value="12" data-memory="106" data-active-memory="24" data-quant="0.5">GLM-4.5-Air MoE (~106GB total, ~24GB active)</option>
-                            <option value="32" data-memory="355" data-active-memory="64" data-quant="0.5">GLM-4.5 MoE (~355GB total, ~64GB active)</option>
+                            <option value="12" data-memory="212" data-active-memory="24" data-quant="0.5">GLM-4.5-Air MoE (~212GB total, ~24GB active)</option>
+                            <option value="32" data-memory="710" data-active-memory="64" data-quant="0.5">GLM-4.5 MoE (~710GB total, ~64GB active)</option>
                         </optgroup>
                         <optgroup label="Zhipu AI GLM 4.6 (2025)">
                             <option value="32" data-memory="710" data-active-memory="64" data-quant="0.5">GLM-4.6 355B MoE (~710GB total, ~64GB active)</option>
@@ -500,8 +523,12 @@
                             <option value="9" data-memory="18" data-quant="1.0">GLM-4.6V-Flash 9B (~18GB)</option>
                         </optgroup>
                         <optgroup label="Zhipu AI GLM 4.7 (2025-2026)">
-                            <option value="32" data-memory="710" data-active-memory="64" data-quant="0.5">GLM-4.7 355B-A32B MoE (~710GB total, ~64GB active)</option>
+                            <option value="32" data-memory="716" data-active-memory="64" data-quant="0.5">GLM-4.7 358B-A32B MoE (~716GB total, ~64GB active)</option>
                             <option value="3" data-memory="60" data-active-memory="6" data-quant="1.0">GLM-4.7-Flash 30B-A3B MoE (~60GB total, ~6GB active)</option>
+                        </optgroup>
+                        <optgroup label="Zhipu AI GLM 5 (2026)">
+                            <option value="40" data-memory="1508" data-active-memory="80" data-quant="0.5">GLM-5 754B-A40B MoE (~1508GB total, ~80GB active)</option>
+                            <option value="40" data-memory="1508" data-active-memory="80" data-quant="0.5">GLM-5.1 754B-A40B MoE (~1508GB total, ~80GB active)</option>
                         </optgroup>
                         <optgroup label="Google Gemma">
                             <option value="2" data-memory="4" data-quant="1.0">Gemma 2B (~4GB)</option>
@@ -523,9 +550,15 @@
                         <optgroup label="IBM Granite 4.0 (2025)">
                             <option value="0.35" data-memory="0.7" data-quant="1.0">Granite 4.0 H 350M (~0.7GB)</option>
                             <option value="1.5" data-memory="3" data-quant="1.0">Granite 4.0 H 1B (~3GB)</option>
+                            <option value="3" data-memory="6" data-quant="1.0">Granite 4.0 Micro 3B (~6GB)</option>
                             <option value="3" data-memory="6" data-quant="1.0">Granite 4.0 H-Micro 3B (~6GB)</option>
                             <option value="1" data-memory="14" data-active-memory="2" data-quant="1.0">Granite 4.0 H-Tiny 7B (~14GB total, ~2GB active)</option>
                             <option value="9" data-memory="64" data-active-memory="18" data-quant="1.0">Granite 4.0 H-Small 32B (~64GB total, ~18GB active)</option>
+                        </optgroup>
+                        <optgroup label="IBM Granite 4.1 (2026)">
+                            <option value="3" data-memory="6" data-quant="1.0">Granite 4.1 3B (~6GB)</option>
+                            <option value="8" data-memory="16" data-quant="1.0">Granite 4.1 8B (~16GB)</option>
+                            <option value="30" data-memory="60" data-quant="0.5">Granite 4.1 30B (~60GB)</option>
                         </optgroup>
                         <optgroup label="AI2 OLMo 2">
                             <option value="1" data-memory="2" data-quant="1.0">OLMo 2 1B (~2GB)</option>
